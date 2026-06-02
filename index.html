@@ -57,15 +57,15 @@
   .category{display:inline-block;background:var(--card2);color:var(--accent2);font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:14px;border:1px solid var(--border)}
   .q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px}
   .q-num{font-size:.78rem;color:var(--muted);margin-bottom:8px}
-  .q-text{font-size:1.05rem;font-weight:600;line-height:1.6}
+  .q-text{font-size:1.05rem;font-weight:600;line-height:1.6;overflow-wrap:break-word;word-break:break-word}
   .q-code{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Menlo','Consolas',monospace;font-size:.82rem;line-height:1.7;color:#c9d1d9;margin-top:14px;white-space:pre-wrap;overflow-x:auto}
   .options{display:flex;flex-direction:column;gap:10px;margin-top:22px}
-  .option-btn{display:flex;align-items:flex-start;gap:14px;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;text-align:left;transition:border-color .18s,background .18s;font-size:.95rem;line-height:1.5;color:var(--text);-webkit-tap-highlight-color:transparent;touch-action:manipulation;width:100%}
+  .option-btn{display:flex;align-items:flex-start;gap:14px;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;text-align:left;transition:border-color .18s,background .18s;font-size:.95rem;line-height:1.5;color:var(--text);-webkit-tap-highlight-color:transparent;touch-action:manipulation;width:100%;box-sizing:border-box;min-width:0}
   .option-btn:not(.answered):hover{border-color:var(--accent);background:#1e2035}
-  .option-btn .letter{min-width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--accent2);flex-shrink:0;margin-top:1px}
-  .option-btn .opt-body{flex:1}
-  .option-btn .opt-label{font-weight:500}
-  .option-btn .opt-explain{font-size:.82rem;color:var(--muted);margin-top:6px;display:none}
+  .option-btn .letter{width:26px;min-width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--accent2);flex-shrink:0;margin-top:2px;align-self:flex-start}
+  .option-btn .opt-body{flex:1;min-width:0;overflow-wrap:break-word;word-break:break-word}
+  .option-btn .opt-label{font-weight:500;display:block;overflow-wrap:break-word;word-break:break-word}
+  .option-btn .opt-explain{font-size:.82rem;color:var(--muted);margin-top:6px;display:none;overflow-wrap:break-word;word-break:break-word}
   .option-btn.correct{border-color:var(--green);background:#0d2b1a}
   .option-btn.correct .letter{background:var(--green);color:#fff}
   .option-btn.wrong{border-color:var(--red);background:#2a1010}
@@ -92,6 +92,28 @@
   .final .score-label{color:var(--muted);margin-bottom:24px}
   .final h2{font-size:1.3rem;margin-bottom:10px}
   .restart-btn{margin-top:20px;padding:13px 32px;border-radius:10px;background:var(--accent);color:#fff;border:none;font-size:.95rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+
+  .top-nav{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:8px;margin-bottom:16px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:10px 14px;
+  }
+  .top-nav .btn{
+    flex:0 0 auto;padding:8px 16px;font-size:.85rem;
+    border-radius:8px;min-width:90px;text-align:center;
+  }
+  .nav-progress{
+    font-size:.82rem;color:var(--muted);font-weight:600;
+    white-space:nowrap;text-align:center;flex:1;
+  }
+  .nav-progress .prog-nums{
+    display:block;font-size:1rem;font-weight:800;color:var(--text);
+  }
+  .nav-progress .prog-label{
+    display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;margin-top:1px;
+  }
 
   @media(max-width:640px){
     .hero{padding:28px 16px 24px}
@@ -120,7 +142,9 @@
     .option-btn .opt-explain{font-size:.76rem}
     .result-banner{padding:10px 13px;font-size:.86rem}
     .nav{flex-direction:column-reverse;gap:8px;margin-top:8px}
+    .top-nav{flex-direction:row !important;gap:6px;padding:8px 10px}
     .btn{width:100%;padding:13px;font-size:.9rem;text-align:center}
+    .top-nav .btn{width:auto;padding:9px 14px;font-size:.84rem;min-width:80px}
     .final{padding:32px 10px}
     .final .score{font-size:2.8rem}
   }
@@ -2919,7 +2943,935 @@ const BALOTARIO_QUESTIONS = [
   ...BALOTARIO_EXTRA
 ];
 
-const ALL_QUESTIONS = [...JAVA_QUESTIONS,...SPRING_QUESTIONS,...BACKEND_QUESTIONS,...BALOTARIO_EXTRA];
+
+
+const DP_QUESTIONS = [
+
+// ══════════ SOLID PRINCIPLES ══════════
+{cat:"SOLID Principles",
+q:"¿Qué establece el Principio de Responsabilidad Única (SRP) y cómo detectas una violación?",
+options:[
+  {label:"Una clase debe hacer solo operaciones de un mismo tipo de dato (String, Integer, etc.)", explain:"Incorrecto. SRP no tiene que ver con tipos de datos sino con razones de cambio: una clase debe tener un único motivo para cambiar."},
+  {label:"Una clase debe tener una sola razón para cambiar. Violación: clase que maneja lógica de negocio, acceso a datos Y formateo de respuesta a la vez. Solución: separar en OrderService, OrderRepository y OrderDTOMapper.", explain:"Correcto. La prueba práctica: ¿cuántas cosas distintas tendrías que cambiar para modificar esta clase? Si la respuesta es más de una (cambio de BD, cambio de regla de negocio, cambio de formato), viola SRP. En banca: un PaymentProcessor que valida, persiste, notifica y loguea viola SRP."},
+  {label:"Una clase debe tener un único método público; el resto deben ser privados", explain:"Incorrecto. SRP no restringe el número de métodos. Una clase puede tener varios métodos y aún respetar SRP si todos contribuyen a una única responsabilidad cohesiva."},
+  {label:"SRP solo aplica a clases; los métodos y módulos no tienen responsabilidad única", explain:"Incorrecto. SRP aplica a todos los niveles: métodos, clases, módulos. Un método que hace validación Y persistencia Y notificación también viola SRP."},
+], correct:1},
+
+{cat:"SOLID Principles",
+q:"¿Qué dice el Principio Abierto/Cerrado (OCP) y cuál es el patrón más común para implementarlo?",
+options:[
+  {label:"Las clases deben ser abiertas al público (public) y cerradas al acceso privado (private)", explain:"Incorrecto. OCP no tiene nada que ver con modificadores de acceso. Es sobre extensibilidad vs modificación."},
+  {label:"Las entidades deben estar abiertas para extensión pero cerradas para modificación. Se implementa con interfaces/abstracciones: agregar comportamiento nuevo creando clases nuevas en lugar de modificar las existentes. Ejemplo: Strategy Pattern o Decorator.", explain:"Correcto. En banca: si cada nuevo tipo de validación de pago requiere modificar ValidadorPago, viola OCP. Con OCP: interfaz ValidacionStrategy con implementaciones ValidacionSaldo, ValidacionLimite, ValidacionFraude. Nuevo tipo = nueva clase, sin tocar las existentes."},
+  {label:"Las clases deben abrirse para modificación cuando hay bugs y cerrarse cuando están estables", explain:"Incorrecto. OCP no es un ciclo de vida. Es un principio de diseño: diseñar para extensión sin modificación desde el inicio."},
+  {label:"OCP significa que todo el código debe ser open source y cerrado a licencias privadas", explain:"Incorrecto. OCP es el principio Open/Closed de SOLID, relacionado con diseño de software, no con licencias."},
+], correct:1},
+
+{cat:"SOLID Principles",
+q:"¿Qué establece el Principio de Sustitución de Liskov (LSP) y cuál es un ejemplo de violación típica?",
+options:[
+  {label:"Los objetos de una subclase deben poder reemplazar objetos de la superclase sin alterar la corrección del programa. Violación clásica: Pato (Duck) hereda de Ave (Bird) pero Bird.volar() falla para Pato de Goma que no vuela.", explain:"Correcto. LSP garantiza que la herencia represente genuinamente una relación 'es-un'. Violación en banca: CuentaBloqueada hereda de Cuenta pero lanza excepción en debitar(), rompiendo el contrato de Cuenta. Solución: usar composición o rediseñar la jerarquía."},
+  {label:"Una subclase puede agregar cualquier comportamiento nuevo sin restricción porque hereda de la superclase", explain:"Incorrecto. LSP restringe lo que la subclase puede hacer con los métodos heredados. Puede agregar métodos nuevos, pero no puede debilitar postcondiciones ni lanzar nuevas excepciones no declaradas en el contrato de la superclase."},
+  {label:"LSP significa que las subclases deben ser más pequeñas en código que la superclase", explain:"Incorrecto. LSP no tiene relación con el tamaño del código. Es sobre la correctitud del comportamiento al sustituir."},
+  {label:"LSP solo aplica a interfaces, no a herencia de clases concretas", explain:"Incorrecto. LSP aplica a toda relación de subtipo, incluyendo herencia de clases concretas. De hecho, es más crítico en herencia de clases concretas donde la violación es más sutil."},
+], correct:0},
+
+{cat:"SOLID Principles",
+q:"¿Qué dice el Principio de Segregación de Interfaces (ISP) y cómo se aplica en microservicios?",
+options:[
+  {label:"Las interfaces deben tener el mayor número posible de métodos para ser más reutilizables", explain:"Incorrecto. ISP dice exactamente lo contrario: las interfaces grandes ('fat interfaces') fuerzan a los clientes a depender de métodos que no usan."},
+  {label:"Los clientes no deben depender de interfaces que no usan. Interfaces grandes deben dividirse en específicas. En microservicios: en lugar de IRepository con 15 métodos, tener IReadRepository y IWriteRepository. El servicio de reportes solo depende de IReadRepository.", explain:"Correcto. Ejemplo real: una interfaz IWorker con trabajar(), descansar(), comer(). Un Robot implementa IWorker pero no necesita comer(). ISP: dividir en IWorkable y IFeedable. En Spring: separar interfaces de lectura y escritura permite distintas implementaciones (réplica para lectura, principal para escritura) de forma limpia."},
+  {label:"ISP dice que las interfaces deben segregarse por paquetes o módulos, no por funcionalidad", explain:"Incorrecto. ISP es sobre segregación funcional: agrupar métodos según quién los usa, no según en qué paquete están."},
+  {label:"ISP solo aplica en lenguajes con herencia múltiple como C++; en Java no es relevante", explain:"Incorrecto. Java tiene implementación múltiple de interfaces, lo que hace ISP muy relevante. Una clase puede implementar múltiples interfaces pequeñas en lugar de una grande, lo cual es un patrón Java idiomático."},
+], correct:1},
+
+{cat:"SOLID Principles",
+q:"¿Qué establece el Principio de Inversión de Dependencias (DIP) y cómo lo implementa Spring Boot?",
+options:[
+  {label:"Las clases de alto nivel no deben depender de clases de bajo nivel; ambas deben depender de abstracciones. Spring lo implementa con IoC: en lugar de new Repository(), se inyecta la interfaz IRepository, y Spring decide qué implementación proveer.", explain:"Correcto. DIP es la base del IoC/DI de Spring. Alto nivel (OrderService) depende de IOrderRepository (abstracción), no de JpaOrderRepository (implementación concreta). Esto permite cambiar la implementación de BD sin modificar el servicio, y facilita el mockeo en tests."},
+  {label:"Las dependencias deben inyectarse desde los módulos de bajo nivel hacia los de alto nivel", explain:"Incorrecto. Es al revés: los módulos de alto nivel definen las abstracciones (interfaces), y los de bajo nivel las implementan. La dirección de dependencia se invierte respecto al flujo de control."},
+  {label:"DIP significa que no se deben usar campos privados; todo debe ser public para facilitar la inyección", explain:"Incorrecto. DIP no tiene relación con visibilidad de campos. La inyección en Spring se hace en campos privados con @Autowired o en constructores, manteniendo encapsulamiento."},
+  {label:"DIP solo aplica a la capa de base de datos; las capas de negocio pueden depender de implementaciones concretas", explain:"Incorrecto. DIP aplica a todas las capas. El servicio de negocio no debe depender de clases concretas de infraestructura (JPA, HTTP clients, etc.) sino de interfaces definidas en el dominio."},
+], correct:0},
+
+// ══════════ CREATIONAL PATTERNS ══════════
+{cat:"Patrones Creacionales",
+q:"¿Cuál es el problema principal del patrón Singleton y cómo lo haces thread-safe en Java?",
+options:[
+  {label:"El problema de Singleton es que consume demasiada memoria; se resuelve con WeakReference", explain:"Incorrecto. El problema principal de Singleton es la seguridad en entornos multihilo y el acoplamiento global, no el consumo de memoria."},
+  {label:"Sin sincronización, dos threads pueden crear dos instancias simultáneamente. Solución thread-safe: double-checked locking con volatile, o mejor, usar un enum (garantizado thread-safe por la JVM) o un holder estático (Initialization-on-demand). En Spring, @Component es Singleton por defecto y thread-safe.", explain:"Correcto. El enum Singleton es la forma más idiomática en Java moderno: 'enum Config { INSTANCE; }'. La JVM garantiza que los enums se inicializan una sola vez. En Spring, los beans singleton son gestionados por el contenedor y son thread-safe en cuanto a su creación, aunque el estado mutable compartido sigue siendo responsabilidad del programador."},
+  {label:"Singleton es siempre thread-safe en Java porque la JVM sincroniza automáticamente los campos estáticos", explain:"Incorrecto. Los campos estáticos no son thread-safe automáticamente. Sin volatile o sincronización, la creación lazy de un Singleton puede fallar con múltiples threads."},
+  {label:"La solución es usar synchronized en todos los métodos de la clase Singleton", explain:"Incorrecto. Sincronizar todos los métodos es excesivo y degrada rendimiento. El problema solo está en la creación de la instancia; una vez creada, el acceso a una referencia es seguro. Double-checked locking o enum son las soluciones precisas."},
+], correct:1},
+
+{cat:"Patrones Creacionales",
+q:"¿Cuál es la diferencia entre Factory Method y Abstract Factory?",
+options:[
+  {label:"Factory Method crea familias de objetos relacionados; Abstract Factory crea un solo tipo de objeto", explain:"Incorrecto. Es al revés: Factory Method crea un tipo de objeto (deja la decisión a subclases); Abstract Factory crea familias de objetos relacionados."},
+  {label:"Factory Method: define una interfaz para crear un objeto, las subclases deciden qué instanciar (un solo producto). Abstract Factory: crea familias de objetos relacionados sin especificar clases concretas (múltiples productos coordinados). Ejemplo: Abstract Factory para UI: crea Button + Checkbox + TextField consistentes para Windows o Mac.", explain:"Correcto. En banca: Abstract Factory para crear conectores de pago coordinados (HttpClient + Serializer + ErrorHandler) para SUNAT vs para VISA, garantizando que todos los componentes sean compatibles entre sí. Factory Method para crear el tipo correcto de Transaccion según el canal."},
+  {label:"Son el mismo patrón con nombres distintos según el libro de GoF y el de Martin Fowler", explain:"Incorrecto. Son patrones distintos en el mismo libro GoF. Factory Method es un patrón de herencia; Abstract Factory es un patrón de composición."},
+  {label:"Abstract Factory es obsoleto en Java moderno; se reemplaza completamente con Spring @Bean", explain:"Incorrecto. Abstract Factory sigue siendo relevante como patrón de diseño. Spring @Bean puede implementar el patrón, pero el concepto de crear familias coordinadas de objetos es independiente del framework."},
+], correct:1},
+
+{cat:"Patrones Creacionales",
+q:"¿Cuándo usarías el patrón Prototype en lugar de new o Builder?",
+options:[
+  {label:"Prototype se usa cuando la clase tiene solo un constructor; Builder cuando tiene múltiples", explain:"Incorrecto. La elección no depende del número de constructores. Prototype es para clonar objetos existentes con estado."},
+  {label:"Prototype cuando necesitas crear copias de objetos complejos con estado ya inicializado, y la creación desde cero es costosa. Ejemplo: clonar una configuración de transacción con muchos parámetros predefinidos para reutilizar como plantilla, modificando solo los campos que cambian.", explain:"Correcto. Prototype implementa Cloneable o un método clone() personalizado. Es útil cuando tienes un objeto 'prototipo' configurado y quieres variantes de él. En banca: una configuración de producto financiero compleja que sirve como plantilla para nuevos productos similares. Cuidado con deep vs shallow copy para campos mutables."},
+  {label:"Prototype siempre es más eficiente que new porque evita el constructor", explain:"Incorrecto. Prototype puede ser más eficiente si la inicialización es costosa, pero si el constructor es simple, new puede ser igual o más eficiente. La eficiencia depende del caso específico."},
+  {label:"Prototype en Java es el mismo que clonar con SerializationUtils; no hay diferencia", explain:"Incorrecto. Son implementaciones distintas del mismo concepto. Clonar via serialización es más lento pero hace deep copy automático. Cloneable es más rápido pero requiere implementación manual de deep copy para objetos complejos."},
+], correct:1},
+
+{cat:"Patrones Creacionales",
+q:"¿Qué problema resuelve el patrón Object Pool y cuándo lo aplicarías en Java?",
+options:[
+  {label:"Object Pool resuelve el problema de objetos inmutables compartidos entre threads", explain:"Incorrecto. Eso describe el patrón Flyweight. Object Pool mantiene objetos reutilizables para evitar creación/destrucción costosa repetida."},
+  {label:"Reutiliza objetos costosos de crear en lugar de crearlos/destruirlos repetidamente. Aplicar cuando la creación del objeto es cara (conexiones a BD, threads, parsers XML) y los objetos son reutilizables. HikariCP es un Object Pool de conexiones JDBC.", explain:"Correcto. En banca: el connection pool de HikariCP es la implementación más crítica de Object Pool. Cada conexión a BD tarda ~50-100ms en crearse (handshake TCP, autenticación). Con pool de 20 conexiones reutilizadas, miles de queries las comparten sin overhead de creación. También aplica a pools de threads (ExecutorService) y objetos parser."},
+  {label:"Object Pool es lo mismo que caché; ambos almacenan objetos para reutilización futura sin diferencia conceptual", explain:"Incorrecto. La caché almacena resultados de operaciones anteriores para evitar recalcularlos. Object Pool gestiona instancias de objetos costosos de crear, independientemente del resultado que produzcan."},
+  {label:"Object Pool no es necesario en Java moderno porque el GC gestiona la memoria automáticamente", explain:"Incorrecto. El GC gestiona la memoria, pero no elimina el overhead de creación de objetos costosos. El tiempo de creación de una conexión a BD es un costo de I/O, no de memoria, que el GC no puede optimizar."},
+], correct:1},
+
+// ══════════ STRUCTURAL PATTERNS ══════════
+{cat:"Patrones Estructurales",
+q:"¿Cuál es la diferencia entre los patrones Adapter y Facade?",
+options:[
+  {label:"Adapter y Facade son el mismo patrón; solo difieren en el nombre según la capa donde se aplican", explain:"Incorrecto. Son patrones con propósitos distintos: Adapter convierte interfaces incompatibles; Facade simplifica interfaces complejas."},
+  {label:"Adapter: convierte la interfaz de una clase en otra que el cliente espera (integración de sistemas incompatibles). Facade: proporciona una interfaz simplificada a un subsistema complejo. Adapter resuelve incompatibilidad; Facade resuelve complejidad.", explain:"Correcto. Ejemplo Adapter: integrar una librería de pagos externa con interfaz diferente a la que tu sistema espera, creando un adaptador que traduce. Ejemplo Facade: PaymentFacade.procesarPago() que internamente coordina validación, cargo, notificación y auditoría, ocultando esa complejidad al llamante."},
+  {label:"Facade agrega funcionalidad nueva al objeto adaptado; Adapter solo cambia la interfaz sin agregar lógica", explain:"Incorrecto. Facade generalmente no agrega funcionalidad nueva, solo simplifica el acceso a la existente. Adapter tampoco agrega funcionalidad, solo traduce la interfaz."},
+  {label:"Adapter funciona solo en tiempo de compilación; Facade puede usarse en tiempo de ejecución", explain:"Incorrecto. Ambos patrones son decisiones de diseño que operan en tiempo de ejecución. La distinción no es compilación vs ejecución."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Cómo funciona el patrón Decorator y en qué se diferencia de la herencia?",
+options:[
+  {label:"Decorator es equivalente a la herencia pero con mejor sintaxis; son intercambiables en la práctica", explain:"Incorrecto. Decorator y herencia tienen diferencias fundamentales. Decorator permite composición dinámica en runtime; la herencia es estática en tiempo de compilación."},
+  {label:"Decorator envuelve un objeto para agregar comportamiento dinámicamente sin modificar la clase original. Ventaja sobre herencia: composición en runtime (puedes aplicar múltiples decoradores en cualquier orden), sin explosión de subclases. Ejemplo: Java I/O Streams usa Decorator extensivamente.", explain:"Correcto. Java I/O: new BufferedReader(new InputStreamReader(new FileInputStream(path))). Cada capa agrega comportamiento (buffering, encoding, file access) sin modificar las clases base. En banca: LoggingDecorator y AuditDecorator sobre cualquier Service sin modificarlos. Con herencia necesitarías LoggingAuditingService, LoggingService, AuditingService... explosión combinatoria."},
+  {label:"Decorator solo funciona con interfaces; no puede decorar clases concretas", explain:"Incorrecto. Decorator funciona implementando la misma interfaz que el objeto decorado, o heredando de él. Puede trabajar con clases concretas aunque el patrón es más limpio con interfaces."},
+  {label:"El patrón Decorator en Java es solo para Stream de I/O; no tiene otros casos de uso prácticos", explain:"Incorrecto. Decorator tiene amplios casos de uso: Spring Security (cadena de filtros), logging, caching, métricas, validación, transacciones... cualquier comportamiento transversal que quieras agregar dinámicamente."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Qué es el patrón Proxy y cuáles son sus principales tipos de uso?",
+options:[
+  {label:"Proxy es un sinónimo de Facade; ambos proporcionan una interfaz simplificada al objeto real", explain:"Incorrecto. Proxy y Facade tienen propósitos distintos. Facade simplifica acceso a un subsistema complejo. Proxy controla el acceso a un objeto específico, pudiendo agregar lógica antes/después sin simplificar necesariamente."},
+  {label:"Proxy controla el acceso a un objeto real, interponiendo lógica sin que el cliente lo sepa. Tipos: Virtual Proxy (lazy loading), Protection Proxy (control de acceso/seguridad), Remote Proxy (acceso a objetos remotos), Caching Proxy. Spring AOP usa Dynamic Proxy para @Transactional y @Cacheable.", explain:"Correcto. Spring @Transactional funciona via Proxy: Spring genera un proxy dinámico de tu servicio que intercepta las llamadas a métodos anotados, abre/cierra transacciones, y delega al objeto real. El llamante no sabe que está hablando con un proxy. Esto es por qué llamar a un método @Transactional desde otro método de la misma clase no funciona: la llamada interna bypasea el proxy."},
+  {label:"Proxy solo se usa para llamadas a servicios remotos (REST, gRPC); para objetos locales se usa Decorator", explain:"Incorrecto. Aunque Remote Proxy es un uso común, Proxy tiene múltiples aplicaciones locales: lazy loading, seguridad, logging, caching. Spring AOP usa proxies locales extensivamente."},
+  {label:"El patrón Proxy siempre degrada rendimiento y debe evitarse en sistemas de alta concurrencia", explain:"Incorrecto. El overhead de un Dynamic Proxy de Java es mínimo (microsegundos). Los beneficios (separación de concerns, seguridad, transacciones) superan ampliamente ese costo en la mayoría de sistemas."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Cuándo usarías el patrón Composite y cuál es su estructura básica?",
+options:[
+  {label:"Composite se usa cuando necesitas combinar dos objetos de diferente tipo en uno solo", explain:"Incorrecto. Composite es para estructuras de árbol donde los nodos individuales y los grupos se tratan de forma uniforme."},
+  {label:"Composite permite tratar objetos individuales y composiciones de objetos de forma uniforme. Estructura: interfaz Component, clase Leaf (nodo hoja), clase Composite (nodo que contiene otros Component). Ejemplo: árbol de categorías de productos bancarios donde una categoría puede contener subcategorías o productos.", explain:"Correcto. Ejemplo clásico: sistema de archivos donde Archivo y Carpeta implementan la misma interfaz FileSystemItem. Carpeta contiene una lista de FileSystemItem (que pueden ser Archivos u otras Carpetas). El cliente llama tamanio() en cualquier nodo sin saber si es hoja o compuesto. En banca: estructura jerárquica de cuentas, grupos de validaciones, menús de permisos."},
+  {label:"Composite es lo mismo que una lista (List<T>); Java Collections ya implementa este patrón completamente", explain:"Incorrecto. List<T> es una colección plana. Composite es una estructura de árbol donde los nodos pueden ser hojas o compuestos que contienen otros nodos. La recursividad es la clave del patrón."},
+  {label:"Composite solo funciona con herencia; no puede implementarse con interfaces en Java", explain:"Incorrecto. Composite se implementa idealmente con interfaces. El Component es típicamente una interfaz, y tanto Leaf como Composite la implementan."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Qué problema resuelve el patrón Flyweight y cuándo lo aplicarías en un sistema bancario?",
+options:[
+  {label:"Flyweight resuelve problemas de threading compartiendo objetos entre hilos de forma segura", explain:"Incorrecto. Flyweight es sobre eficiencia de memoria, no sobre threading. Comparte el estado intrínseco entre objetos similares para reducir consumo de memoria."},
+  {label:"Flyweight reduce uso de memoria compartiendo estado intrínseco (inmutable, independiente del contexto) entre múltiples objetos. El estado extrínseco (específico del contexto) se pasa como parámetro. Ejemplo: tipos de transacción o divisas como objetos Flyweight compartidos entre millones de transacciones.", explain:"Correcto. En un sistema con millones de transacciones, si cada una tiene su propio objeto TipoCambio con todos los datos de la divisa, el consumo de memoria es enorme. Con Flyweight: un pool de objetos Divisa (USD, PEN, EUR) compartidos por todas las transacciones. La transacción almacena solo la referencia al Flyweight + el monto específico. Java usa Flyweight en String Pool y en el Integer Cache."},
+  {label:"Flyweight es útil solo cuando tienes menos de 100 objetos; para más objetos usar Prototype", explain:"Incorrecto. Flyweight es especialmente útil cuando tienes MUCHOS objetos del mismo tipo con estado repetido. Con pocos objetos, el patrón no aporta beneficio significativo."},
+  {label:"Flyweight y Singleton son el mismo patrón porque ambos garantizan una sola instancia de un objeto", explain:"Incorrecto. Singleton garantiza exactamente una instancia de una clase. Flyweight gestiona un pool de instancias reutilizables; puede haber varios Flyweights distintos (uno por divisa, por ejemplo), no solo uno."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Qué es el patrón Bridge y cuándo elegirías Bridge sobre herencia múltiple?",
+options:[
+  {label:"Bridge es equivalente a herencia múltiple en lenguajes que la soportan; en Java se usa como sustituto", explain:"Incorrecto. Bridge no emula herencia múltiple. Desacopla abstracción de implementación para que ambas puedan variar independientemente."},
+  {label:"Bridge desacopla una abstracción de su implementación permitiendo que ambas varíen independientemente. Evita la explosión de subclases cuando tienes dos dimensiones de variación. Ejemplo: Forma (Círculo, Cuadrado) × Color (Rojo, Azul) → sin Bridge: 4 clases; con Bridge: 2+2=4 clases más flexibles.", explain:"Correcto. Sin Bridge: CírculoRojo, CírculoAzul, CuadradoRojo, CuadradoAzul. Con Bridge: Círculo y Cuadrado tienen una referencia a Color (interface). Agregar un nuevo color solo requiere una nueva implementación de Color, no tocar las formas. En banca: Canal (Web, Móvil, API) × TipoPago (Transferencia, Débito) → Bridge evita la explosión combinatoria."},
+  {label:"Bridge se usa exclusivamente para conectar dos bases de datos distintas en una misma aplicación", explain:"Incorrecto. Bridge es un patrón de diseño de objetos que no tiene relación específica con bases de datos. El nombre no hace referencia a puentes de datos sino al concepto de tender un puente entre abstracción e implementación."},
+  {label:"Bridge y Adapter son idénticos; la diferencia es solo intencional: Bridge se diseña desde el inicio, Adapter arregla código existente", explain:"Incorrecto parcialmente. Aunque hay similitud estructural, Bridge se diseña para que dos jerarquías varíen independientemente. Adapter hace que interfaces incompatibles colaboren. La intención y la estructura difieren."},
+], correct:1},
+
+// ══════════ BEHAVIORAL PATTERNS ══════════
+{cat:"Patrones de Comportamiento",
+q:"¿Cómo funciona el patrón Observer y cuál es la diferencia con el patrón Event Bus?",
+options:[
+  {label:"Observer y Event Bus son idénticos; Event Bus es solo el nombre moderno de Observer en frameworks", explain:"Incorrecto. Tienen diferencias importantes en el acoplamiento. Observer típicamente acopla observers al subject directamente. Event Bus desacopla completamente publicadores y suscriptores."},
+  {label:"Observer: el Subject conoce sus Observers y los notifica directamente (acoplamiento directo). Event Bus: publicadores y suscriptores no se conocen, se comunican vía un mediador central (Guava EventBus, Spring ApplicationEvent). Event Bus es más desacoplado pero más difícil de trazar.", explain:"Correcto. En Spring: ApplicationEventPublisher y @EventListener implementan el patrón de forma desacoplada. El servicio que publica TransactionCompletedEvent no sabe qué clases lo escuchan. Ventaja: agregar nuevos listeners sin modificar el publicador. Desventaja: flujo de control menos obvio, puede dificultar el debugging."},
+  {label:"Observer require que los Observers implementen una interfaz; Event Bus no tiene restricciones de tipo", explain:"Incorrecto. Esta es una diferencia de implementación, no conceptual. Ambos pueden implementarse con o sin interfaces. Spring @EventListener no requiere implementar ninguna interfaz."},
+  {label:"Observer es solo para cambios de estado en UI (patrón MVC); no aplica en el backend", explain:"Incorrecto. Observer es un patrón general aplicable en cualquier capa. En backend: notificaciones de cambio de estado de transacciones, invalidación de caché, auditoría de eventos de negocio."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Cuándo el patrón Command es más apropiado que llamar métodos directamente?",
+options:[
+  {label:"Command es siempre más apropiado que los métodos directos porque agrega flexibilidad", explain:"Incorrecto. Command agrega indirección y complejidad. Solo vale la pena cuando necesitas sus ventajas específicas: undo/redo, queuing, logging de operaciones."},
+  {label:"Command encapsula una acción como objeto, permitiendo: undo/redo (guardar el comando), queuing (ejecutar más tarde), logging de operaciones (auditoría), y macro-comandos (secuencias). Ejemplo: operaciones bancarias con posibilidad de reversión o cola de transacciones.", explain:"Correcto. En banca: un TransferenciaCommand puede encolarse, reintenarse, revertirse (compensating transaction) e inspeccionarse en auditoría. Si se implementa solo como método transferir(), perderías esas capacidades. Sistemas de trading usan Command extensivamente para audit trail de todas las operaciones."},
+  {label:"Command solo aplica cuando se necesita multi-threading; para ejecución sincrónica los métodos directos son suficientes", explain:"Incorrecto. Command tiene valor en ejecución sincrónica: undo/redo en editores, macros, auditoría de operaciones. El multi-threading es uno de los casos pero no el único."},
+  {label:"Command y Strategy son el mismo patrón; solo difieren en si se pasa el objeto antes o después de la ejecución", explain:"Incorrecto. Strategy encapsula algoritmos intercambiables (cómo hacer algo). Command encapsula acciones con su contexto (qué hacer y cuándo). Strategy no tiene mecanismo de undo; Command sí puede tenerlo."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Cuál es la diferencia entre Template Method y Strategy para definir algoritmos variables?",
+options:[
+  {label:"Template Method usa herencia; Strategy usa composición. Template Method define el esqueleto del algoritmo en la superclase con pasos que las subclases sobreescriben. Strategy delega el algoritmo completo a un objeto separado inyectado en runtime.", explain:"Correcto. Template Method: clase abstracta ProcessadorPago con procesarPago() que llama validar() (hook que subclases implementan), cobrar(), notificar(). Strategy: ProcessadorPago recibe una ValidacionStrategy en el constructor. Template Method es menos flexible (herencia estática); Strategy permite cambiar el algoritmo en runtime. GoF dice: 'Template Method usa herencia para variar parte del algoritmo; Strategy usa delegación para variar el algoritmo completo'."},
+  {label:"Template Method es más moderno que Strategy; en Java 8+ Template Method se reemplaza con Strategy siempre", explain:"Incorrecto. Ambos tienen casos de uso válidos en Java moderno. Template Method sigue siendo útil cuando tienes un algoritmo con pasos fijos y pasos variables claros. Strategy es mejor cuando el algoritmo completo varía."},
+  {label:"Template Method y Strategy son equivalentes; la diferencia es solo si el algoritmo está en la clase o en una interfaz funcional", explain:"Incorrecto. La diferencia es estructural y de acoplamiento: Template Method usa herencia (acoplamiento estático), Strategy usa composición (acoplamiento dinámico). No son equivalentes."},
+  {label:"Template Method nunca debe usarse en Java moderno porque promueve la herencia que está considerada un antipatrón", explain:"Incorrecto. La herencia no es un antipatrón; el abuso de la herencia sí lo es. Template Method tiene casos de uso legítimos donde la relación 'es-un' con pasos variables es el modelo correcto."},
+], correct:0},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Cómo funciona el patrón Chain of Responsibility y cuál es un ejemplo en el ecosistema Java/Spring?",
+options:[
+  {label:"Chain of Responsibility crea una cadena donde todos los manejadores procesan siempre la solicitud en paralelo", explain:"Incorrecto. En CoR, cada manejador decide si procesa la solicitud o la pasa al siguiente. No es procesamiento paralelo ni garantiza que todos la procesen."},
+  {label:"Pasa una solicitud a lo largo de una cadena de manejadores; cada uno decide si la procesa o la pasa al siguiente. Ejemplo: Spring Security FilterChain donde cada filtro procesa autenticación, autorización, logging, y pasa al siguiente o corta la cadena si hay error.", explain:"Correcto. Spring Security es Chain of Responsibility puro: UsernamePasswordAuthenticationFilter → JwtAuthenticationFilter → AuthorizationFilter → ... Cada filtro puede procesar y continuar, o detener la cadena. Servlet FilterChain usa el mismo patrón. En banca: cadena de validaciones de transacción donde cada regla puede aprobar o rechazar."},
+  {label:"Chain of Responsibility requiere que el mismo objeto maneje todos los pasos de la cadena", explain:"Incorrecto. Es precisamente lo opuesto: cada paso de la cadena es un manejador diferente con responsabilidad específica. La cadena desacopla el emisor de la solicitud de sus manejadores."},
+  {label:"Chain of Responsibility solo sirve para manejo de errores/excepciones; no aplica a flujos normales", explain:"Incorrecto. CoR aplica a cualquier flujo donde múltiples manejadores potenciales procesan una solicitud. El manejo de excepciones de Java (multicatch, jerarquía de excepciones) tiene similitudes pero CoR es más general."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Qué problema resuelve el patrón State y cuándo lo preferirías sobre múltiples if/else?",
+options:[
+  {label:"State y Strategy son el mismo patrón; solo el nombre cambia según si modelamos comportamiento o estado", explain:"Incorrecto. Aunque son estructuralmente similares, Strategy encapsula algoritmos intercambiables por el cliente. State permite que un objeto cambie su comportamiento según su estado interno, y las transiciones pueden ser automáticas."},
+  {label:"State permite que un objeto cambie su comportamiento cuando cambia su estado interno. Preferible a if/else cuando: hay muchos estados con comportamiento diferente, los estados tienen transiciones definidas, la lógica de estado crece y el if/else se vuelve inmanejable. Ejemplo: estados de una Transacción (PENDIENTE, PROCESANDO, COMPLETADA, FALLIDA, REVERTIDA).", explain:"Correcto. Con if/else, cada nuevo estado requiere modificar todos los métodos que preguntan por el estado. Con State: cada estado es una clase que implementa el comportamiento específico. Agregar estado SUSPENDIDA = nueva clase, sin tocar las existentes. En banca los procesos tienen ciclos de vida complejos perfectos para State."},
+  {label:"State solo aplica a máquinas de estados finitos teóricas; los sistemas reales son demasiado complejos para usar State", explain:"Incorrecto. Muchos sistemas reales usan State: carritos de compra, pedidos, transacciones, aprobaciones, contratos. La complejidad real es precisamente el argumento para usar State en lugar de if/else que se vuelve inmanejable."},
+  {label:"State es menos eficiente que if/else porque crea muchos objetos adicionales", explain:"Incorrecto. El overhead de objetos es negligible frente a los beneficios de mantenibilidad. Si los estados se implementan como singletons (estados sin estado mutable), el overhead es aún menor."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Qué es el patrón Iterator y por qué es importante para el encapsulamiento en colecciones?",
+options:[
+  {label:"Iterator es redundante en Java moderno porque for-each hace exactamente lo mismo sin necesidad del patrón", explain:"Incorrecto. for-each en Java usa Iterator internamente. El patrón es la base que permite iterar colecciones sin exponer su implementación interna."},
+  {label:"Iterator proporciona una forma de acceder secuencialmente a los elementos de una colección sin exponer su representación interna. Permite iterar listas, árboles, grafos con la misma interfaz. Java Iterable/Iterator es la implementación estándar que habilita el for-each.", explain:"Correcto. La clave es el encapsulamiento: el cliente no sabe si itera un ArrayList, LinkedList, TreeSet o una colección personalizada. Todos se comportan igual con Iterator. Permite cambiar la estructura interna sin modificar el código que itera. En banca: iterar resultados paginados de BD como si fueran una colección continua (lazy loading por chunks)."},
+  {label:"Iterator solo funciona con listas (List); para Sets y Maps se necesitan otros patrones", explain:"Incorrecto. Iterator funciona con cualquier colección que implemente Iterable. Set, Map.entrySet(), Queue, incluso estructuras personalizadas como árboles pueden implementar Iterator."},
+  {label:"El patrón Iterator fue superado por los Streams de Java 8 y ya no debería usarse directamente", explain:"Incorrecto. Streams son una abstracción de nivel superior que usan Iterator internamente. El patrón Iterator sigue siendo relevante para estructuras que no son naturalmente un Stream, para iteración con estado, y como base del sistema de colecciones de Java."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Cuándo usarías el patrón Mediator en lugar de comunicación directa entre objetos?",
+options:[
+  {label:"Mediator siempre es mejor que la comunicación directa; reduce cualquier tipo de dependencia", explain:"Incorrecto. Mediator centraliza la comunicación pero crea un objeto 'God' que conoce todo. Si se abusa, el Mediator se convierte en el antipatrón God Object."},
+  {label:"Mediator reduce la comunicación 'todos con todos' centralizando la interacción en un objeto mediador. Usar cuando: muchos objetos se comunican causando acoplamiento alto, quieres desacoplar remitente y receptor. Ejemplo: Kafka o un Event Bus como mediadores de microservicios.", explain:"Correcto. Sin mediador, en un sistema con 5 microservicios que se llaman entre sí: hasta 20 dependencias directas. Con Kafka como mediador: cada servicio solo conoce Kafka, no a los otros. Facilita agregar nuevos servicios sin modificar los existentes. También aplica a nivel de objetos: un ChatRoom (mediador) entre Users que no se conocen directamente."},
+  {label:"Mediator solo aplica a sistemas de mensajería; para objetos Java regulares la comunicación directa es siempre preferible", explain:"Incorrecto. Mediator aplica a cualquier nivel: objetos, clases, módulos, servicios. A nivel de objetos: un EventManager que coordina Form components (fields, buttons) sin que se conozcan directamente."},
+  {label:"Mediator y Observer son equivalentes porque ambos desacoplan emisores y receptores", explain:"Incorrecto. Observer tiene un Subject que conoce sus Observers (acoplamiento unidireccional). Mediator centraliza TODA la comunicación; los colegas no se conocen entre sí ni conocen al mediador directamente (solo a través de su interfaz)."},
+], correct:1},
+
+// ══════════ ADVANCED & ENTERPRISE PATTERNS ══════════
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón CQRS y cuándo lo aplicarías en un sistema bancario?",
+options:[
+  {label:"CQRS significa que los métodos Command deben ser void y los Query deben retornar valor; es solo una convención de nomenclatura", explain:"Incorrecto. CQRS (Command Query Responsibility Segregation) va mucho más allá de una convención. Separa físicamente el modelo de escritura del modelo de lectura, potencialmente con diferentes bases de datos."},
+  {label:"CQRS separa el modelo de escritura (Commands: crean/modifican estado) del modelo de lectura (Queries: consultan sin modificar). Beneficio: cada lado puede optimizarse independientemente. En banca: writes en BD transaccional normalizada, reads en réplica desnormalizada o caché optimizada para reportes.", explain:"Correcto. En sistemas bancarios de alto volumen: las transferencias (Commands) necesitan consistencia ACID en BD relacional. Los reportes y consultas de saldo (Queries) pueden servirse desde una réplica desnormalizada o Elasticsearch optimizado para búsqueda. CQRS también facilita Event Sourcing y escala independiente de lecturas vs escrituras."},
+  {label:"CQRS solo aplica en arquitecturas serverless; para microservicios tradicionales el patrón Repository es suficiente", explain:"Incorrecto. CQRS aplica en cualquier arquitectura donde lecturas y escrituras tienen requisitos de rendimiento, consistencia o escala diferentes. Es especialmente valioso en microservicios con alto volumen de lecturas."},
+  {label:"CQRS es un antipatrón porque duplica el modelo de datos y aumenta la complejidad innecesariamente", explain:"Incorrecto. CQRS añade complejidad deliberadamente a cambio de beneficios claros. Para sistemas simples puede ser over-engineering. Para sistemas con lecturas masivas o modelos de lectura/escritura muy diferentes, los beneficios superan la complejidad."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Outbox y qué problema de consistencia resuelve en microservicios?",
+options:[
+  {label:"Outbox es un patrón de correo electrónico para gestionar notificaciones asíncronas en microservicios", explain:"Incorrecto. Outbox Pattern (Transactional Outbox) resuelve el problema de garantizar consistencia entre una transacción de BD y el envío de un evento a Kafka/mensajería."},
+  {label:"Resuelve el problema de publicar eventos a Kafka ATÓMICAMENTE con la transacción de BD. En lugar de publicar a Kafka directamente (puede fallar después del commit de BD), se escribe el evento en una tabla 'outbox' dentro de la misma transacción. Un proceso separado lee la outbox y publica a Kafka.", explain:"Correcto. Sin Outbox: si el pago se registra en BD y luego el envío a Kafka falla, el evento se pierde. Con Outbox: pago + evento_outbox en la misma transacción ACID. Si Kafka falla, el registro en outbox persiste y se reintenta. Garantiza 'at-least-once delivery'. Debezium es una implementación popular via CDC."},
+  {label:"Outbox Pattern requiere dos bases de datos separadas: una para los datos y otra para los eventos", explain:"Incorrecto. La clave del Outbox es que la tabla outbox está en la MISMA base de datos que los datos de negocio, lo que permite incluirla en la misma transacción ACID."},
+  {label:"Outbox es lo mismo que Inbox Pattern; son sinónimos que describen el mismo mecanismo de mensajería", explain:"Incorrecto. Son patrones complementarios pero distintos. Outbox garantiza que el productor envía el evento consistentemente. Inbox (idempotent consumer) garantiza que el consumidor procesa el evento exactamente una vez."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es Event Sourcing y cómo difiere del modelo de datos CRUD tradicional?",
+options:[
+  {label:"Event Sourcing es simplemente loguear todos los cambios de BD en un archivo de log para auditoría", explain:"Incorrecto. Event Sourcing es el modelo de datos principal, no un sistema de auditoría secundario. El estado actual se deriva de la secuencia de eventos, no se almacena directamente."},
+  {label:"Event Sourcing almacena secuencias de eventos inmutables en lugar del estado actual. El estado se reconstruye reproduciendo los eventos. Ventajas: audit trail completo, posibilidad de reconstruir estado en cualquier punto del tiempo, base natural para CQRS. En banca: ideal para el libro mayor (ledger).", explain:"Correcto. CRUD: tabla Cuenta con columna saldo=1000 (el estado actual). Event Sourcing: eventos [DepósitoRealizado(500), TransferenciaEnviada(200), CargoCuota(50)] → saldo=250. Ventajas: nunca se pierde historia, se puede auditar cada centavo, se puede 'rebobinar' el tiempo. La banca tradicional siempre usó event sourcing en el sentido contable: el saldo es la suma de todos los movimientos."},
+  {label:"Event Sourcing y CRUD son igualmente eficientes; la elección es solo de preferencia del equipo", explain:"Incorrecto. Event Sourcing tiene trade-offs reales: reconstruir estado leyendo todos los eventos es más lento que consultar el estado actual en CRUD. Se mitiga con snapshots. La elección debe basarse en los requisitos de auditoría y consistencia."},
+  {label:"Event Sourcing solo funciona con bases de datos NoSQL; SQL Server no puede implementarlo", explain:"Incorrecto. Event Sourcing puede implementarse en cualquier base de datos que permita escrituras inmutables (append-only). SQL Server puede usarse perfectamente con una tabla de eventos con inserts y sin updates/deletes."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Bulkhead y cómo previene la propagación de fallos en microservicios?",
+options:[
+  {label:"Bulkhead es un sinónimo de Circuit Breaker; ambos patrones hacen lo mismo con diferentes nombres", explain:"Incorrecto. Son patrones complementarios. Circuit Breaker corta la comunicación con un servicio que falla. Bulkhead aisla los recursos para que un fallo en un área no consuma los recursos de otras áreas."},
+  {label:"Bulkhead aísla partes del sistema en 'compartimentos estancos' para que el fallo de uno no agote los recursos del total. Ejemplo: usar pools de threads separados para llamadas a SUNAT, RENIEC y el core bancario. Si SUNAT se vuelve lento, solo su pool se satura, no afecta a RENIEC.", explain:"Correcto. Sin Bulkhead: un único ThreadPool para todas las llamadas externas. Si SUNAT se vuelve lento (200 requests esperando), agota el pool y las llamadas a RENIEC también se bloquean. Con Bulkhead: pool separado con límite de 20 threads para SUNAT. Si se satura, SUNAT falla rápido pero RENIEC sigue operando con su propio pool. Resilience4j implementa Bulkhead."},
+  {label:"Bulkhead solo aplica a bases de datos; para servicios HTTP se usa Circuit Breaker exclusivamente", explain:"Incorrecto. Bulkhead aplica a cualquier recurso limitado: threads, conexiones, memoria. El concepto es universal: aislar el consumo de recursos para prevenir cascada de fallos."},
+  {label:"Bulkhead es un patrón de Kubernetes para aislar namespaces; no aplica al diseño de aplicaciones Java", explain:"Incorrecto. Bulkhead es un patrón de diseño de aplicaciones. Resilience4j, Hystrix e Istio lo implementan a nivel de aplicación. Kubernetes tiene conceptos similares (resource quotas) pero son independientes."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Cuáles son los anti-patrones más comunes en microservicios y cómo los identificas?",
+options:[
+  {label:"Los microservicios no tienen anti-patrones porque su naturaleza distribuida resuelve todos los problemas de arquitectura monolítica", explain:"Incorrecto. Los microservicios introducen su propia categoría de anti-patrones además de preservar algunos del monolito."},
+  {label:"Principales anti-patrones: Distributed Monolith (microservicios acoplados que deben desplegarse juntos), Shared Database (múltiples servicios acceden a la misma BD), Chatty Services (demasiadas llamadas HTTP entre servicios), God Service (un servicio hace demasiado), y Nano-services (servicios demasiado pequeños sin valor propio).", explain:"Correcto. Distributed Monolith: tienes la complejidad de los microservicios sin sus beneficios. Shared Database: elimina la autonomía del servicio (cambiar el esquema afecta a todos). Chatty Services: N+1 queries a nivel de servicios (resolver con API composition o BFF). God Service: viola SRP a nivel de servicio. En banca, el 'servicio de clientes' que hace validación, scoring, KYC y reporting es un God Service."},
+  {label:"El único anti-patrón real en microservicios es usar una base de datos SQL en lugar de NoSQL", explain:"Incorrecto. La elección SQL vs NoSQL no define si es un anti-patrón. Los anti-patrones son problemas de diseño arquitectural independientes del motor de base de datos."},
+  {label:"Los anti-patrones de microservicios solo aplican a sistemas con más de 50 servicios; para sistemas pequeños cualquier diseño es válido", explain:"Incorrecto. Los anti-patrones pueden aparecer desde el primer servicio. Un Shared Database entre 3 servicios es tan problemático como entre 50. La escala no define si es un anti-patrón."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Saga y cuándo elegirías Orquestación vs Coreografía?",
+options:[
+  {label:"Saga es un patrón de Kubernetes para orquestar pods; no está relacionado con transacciones de aplicación", explain:"Incorrecto. Saga es un patrón de diseño para transacciones distribuidas que abarca múltiples microservicios con bases de datos independientes."},
+  {label:"Saga maneja transacciones distribuidas como secuencia de transacciones locales con compensaciones en caso de fallo. Orquestación: un coordinador central (Saga Orchestrator) dirige los pasos. Coreografía: cada servicio reacciona a eventos y emite los suyos. Orquestación: más control y trazabilidad. Coreografía: más desacoplado pero difícil de trazar.", explain:"Correcto. Orquestación es mejor para: flujos complejos con muchas reglas de negocio, cuando necesitas trazabilidad clara, equipos que prefieren control centralizado. Coreografía para: flujos simples, cuando el desacoplamiento es prioritario. En banca: el proceso de apertura de cuenta (validar identidad → verificar score crediticio → crear cuenta → notificar) se beneficia de Orquestación por su complejidad y necesidad de auditoría."},
+  {label:"Orquestación y Coreografía son igualmente complejas; la elección es solo estética", explain:"Incorrecto. Tienen trade-offs distintos: Orquestación crea acoplamiento al orquestador pero simplifica el debugging. Coreografía desacopla pero complica la trazabilidad (¿qué pasó exactamente?). La elección tiene implicaciones reales en mantenibilidad."},
+  {label:"Saga solo funciona con Kafka; sin Kafka no es posible implementar transacciones distribuidas", explain:"Incorrecto. Saga puede implementarse con cualquier mecanismo de mensajería o incluso llamadas síncronas. Kafka es popular para Saga pero no es requisito. Axon Framework, Temporal, o implementaciones custom con Spring Events también funcionan."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Repository vs DAO (Data Access Object) y cuándo preferirías cada uno?",
+options:[
+  {label:"Repository y DAO son idénticos; Repository es simplemente el nombre moderno de DAO en arquitecturas DDD", explain:"Incorrecto. Tienen diferencias conceptuales importantes en abstracción y el lenguaje que usan."},
+  {label:"DAO: abstracción centrada en la tabla/fuente de datos, habla en términos de CRUD genérico. Repository: abstracción centrada en el dominio, habla en términos de colecciones de Aggregates de negocio (findClientesPorRiesgoAlto()). Repository oculta completamente la fuente de datos; DAO tiende a exponerla.", explain:"Correcto. DAO típico: getById(Long id), save(Entity e), delete(Long id). Repository de dominio: findTransaccionesSospechosasPorPeriodo(), obtenerClientesConSaldoNegativo(). El repositorio habla el lenguaje del negocio. En Clean/Hexagonal Architecture, Repository vive en el dominio como interfaz; DAO/JPA es la implementación de infraestructura."},
+  {label:"DAO es preferible a Repository porque es más genérico y reutilizable entre proyectos", explain:"Incorrecto. La genericidad de DAO es precisamente su limitación: obliga a la lógica de negocio a conocer detalles de persistencia. Repository específico del dominio encapsula mejor esa lógica."},
+  {label:"Repository solo puede usarse con Spring Data JPA; para otras tecnologías de acceso a datos se debe usar DAO", explain:"Incorrecto. Repository es un patrón de diseño independiente del framework. Puedes implementar un Repository usando JDBC puro, MyBatis, MongoDB, o cualquier tecnología de acceso a datos."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Circuit Breaker y cómo funcionan sus tres estados?",
+options:[
+  {label:"Circuit Breaker tiene dos estados: Encendido (acepta llamadas) y Apagado (rechaza todo); no hay estado intermedio", explain:"Incorrecto. Circuit Breaker tiene tres estados. El estado intermedio (Half-Open) es crucial para la recuperación gradual del servicio."},
+  {label:"Closed (normal, acepta llamadas y monitorea fallos) → Open (demasiados fallos, rechaza llamadas sin intentarlas, devuelve fallback) → Half-Open (después de timeout, permite algunas llamadas de prueba) → vuelve a Closed si tienen éxito o a Open si fallan.", explain:"Correcto. El Circuit Breaker evita llamar a un servicio que sabemos que está fallando (fail fast). Sin él: cada request espera el timeout completo (ej: 5s) → todos los threads bloqueados → cascada de fallos. Con Circuit Breaker abierto: respuesta inmediata con fallback, liberando threads para otras operaciones. Resilience4j y Spring Cloud Circuit Breaker lo implementan."},
+  {label:"Circuit Breaker solo aplica para llamadas a bases de datos; para servicios HTTP se usa Rate Limiting", explain:"Incorrecto. Circuit Breaker aplica a cualquier llamada que puede fallar: HTTP, BD, colas de mensajes, cualquier I/O. Es especialmente importante para servicios externos lentos o inestables."},
+  {label:"El estado Half-Open es temporal y ocurre durante el proceso de actualización del microservicio; no es parte del patrón Circuit Breaker", explain:"Incorrecto. Half-Open es un estado formal del patrón, no relacionado con deployments. Es el mecanismo de 'sonda' que permite al Circuit Breaker determinar si el servicio se ha recuperado antes de volver al estado Closed."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es Clean Architecture y cómo se relacionan sus capas con la Arquitectura Hexagonal?",
+options:[
+  {label:"Clean Architecture y Hexagonal Architecture son nombres distintos para exactamente el mismo patrón sin ninguna diferencia", explain:"Incorrecto. Son similares en principios pero con diferente terminología y énfasis. Clean Architecture (Uncle Bob) tiene capas concéntricas explícitas. Hexagonal (Ports & Adapters, Alistair Cockburn) tiene el concepto de puertos y adaptadores."},
+  {label:"Ambas ponen el dominio en el centro aislado de infraestructura. Clean Architecture: Entities → Use Cases → Interface Adapters → Frameworks. Hexagonal: Domain ↔ Ports (interfaces) ↔ Adapters (implementaciones). La Regla de Dependencia: las capas externas dependen de las internas, nunca al revés.", explain:"Correcto. La Regla de Dependencia es el corazón: el dominio no importa nada de Spring, JPA, o HTTP. En código: PaymentService (dominio) usa IPaymentRepository (puerto/interfaz), no JpaPaymentRepository (adaptador). Esto permite: cambiar JPA por MongoDB sin tocar el dominio, testear el dominio sin BD, deployar el dominio como microservicio o monolito sin cambios."},
+  {label:"Clean Architecture requiere exactamente 4 capas; usar más o menos capas viola el patrón", explain:"Incorrecto. Clean Architecture es un principio (la Regla de Dependencia y separación de concerns), no un número exacto de capas. Los proyectos pueden adaptar la cantidad de capas según la complejidad."},
+  {label:"En Clean Architecture, el dominio puede importar directamente clases de Spring para facilitar el desarrollo", explain:"Incorrecto. El dominio es la capa más interna y no debe depender de frameworks externos como Spring. Las anotaciones de Spring (@Entity, @Transactional) en el dominio violan la independencia de frameworks que define Clean Architecture."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué patrón usarías para implementar auditoría automática en todos los endpoints de un sistema bancario sin duplicar código?",
+options:[
+  {label:"Copiar y pegar el código de auditoría en cada método que lo necesite; es la forma más explícita y controlable", explain:"Incorrecto. Duplicar código de auditoría viola DRY y SRP. Con cientos de endpoints, es inmanejable y propenso a errores (endpoints que se olvidan de auditar)."},
+  {label:"AOP (Aspect-Oriented Programming) con @Around advice en Spring: un aspecto intercepta todos los métodos anotados o en paquetes específicos, registra la auditoría sin que los métodos sepan que están siendo auditados. Decorator Pattern es la alternativa sin AOP.", explain:"Correcto. Spring AOP: @Aspect + @Around('@annotation(Auditable)') captura el método, el usuario autenticado del SecurityContext, los parámetros, el resultado, y persiste el registro de auditoría. Los servicios de negocio solo llevan @Auditable en los métodos críticos. Alternativa: Decorator que envuelve cada servicio con lógica de auditoría, inyectando el decorador en lugar del servicio original."},
+  {label:"Usar herencia: crear una clase BaseService con el método de auditoría y heredar todos los servicios de ella", explain:"Incorrecto. Esto viola SRP (BaseService mezcla negocio con auditoría), crea acoplamiento fuerte por herencia, y no funciona si los servicios ya heredan de otra clase. AOP es más flexible y menos invasivo."},
+  {label:"Un filter HTTP que intercepta todos los requests; es la única forma de auditar sin modificar los servicios", explain:"Incorrecto. Un filter HTTP audita a nivel de HTTP request (URL, headers, status code) pero no tiene acceso a los objetos de dominio ni al contexto de negocio que AOP puede capturar. Ambos son complementarios, no excluyentes."},
+], correct:1},
+
+
+// ══════════ MORE CREATIONAL ══════════
+{cat:"Patrones Creacionales",
+q:"¿Cuál es la diferencia entre Builder y el uso de setters para construir objetos complejos?",
+options:[
+  {label:"Builder y setters son equivalentes; la elección es solo estilo de código", explain:"Incorrecto. Builder permite objetos inmutables una vez construidos; los setters mantienen el objeto mutable."},
+  {label:"Builder garantiza que el objeto esté completamente inicializado antes de usarse y permite inmutabilidad (sin setters post-construcción). Los setters permiten construcción incremental pero el objeto puede estar en estado inválido entre llamadas. Builder también previene mezclar parámetros del mismo tipo.", explain:"Correcto. Ejemplo: new Transferencia.Builder().origen('001').destino('002').monto(BigDecimal.TEN).build(). Objeto inmutable después del build(). Con setters: si se olvida setMonto(), el objeto queda en estado inválido."},
+  {label:"Builder siempre es más lento que setters porque crea un objeto Builder adicional en memoria", explain:"Incorrecto. El overhead del Builder es mínimo. La elección debe basarse en inmutabilidad y claridad, no en micro-optimizaciones."},
+  {label:"Builder solo es útil con Lombok; implementarlo manualmente no tiene sentido en proyectos modernos", explain:"Incorrecto. Entender el patrón Builder es esencial incluso si Lombok lo genera, para saber cuándo y por qué usarlo."},
+], correct:1},
+
+{cat:"Patrones Creacionales",
+q:"¿Qué es el anti-patrón Service Locator y por qué se prefiere Dependency Injection?",
+options:[
+  {label:"Service Locator es el patrón base de Spring IoC; es la mejor práctica para obtener dependencias", explain:"Incorrecto. Spring usa Dependency Injection. Service Locator es cuando el objeto busca activamente sus dependencias, lo opuesto a DI."},
+  {label:"Service Locator: los objetos llaman a un registro central para obtener sus dependencias. Es anti-patrón porque oculta dependencias (no visibles en el constructor), dificulta el testing y crea acoplamiento oculto al localizador. DI hace las dependencias explícitas.", explain:"Correcto. Con Service Locator las dependencias son invisibles. En tests debes configurar el localizador antes de instanciar (setup oculto). Con DI por constructor: dependencias explícitas, se inyectan directamente en tests. Usar ApplicationContext.getBean() desde código de negocio es el anti-patrón."},
+  {label:"Service Locator es obligatorio para obtener beans de Spring en clases no gestionadas por el contenedor", explain:"Incorrecto. La necesidad indica un problema de diseño. La solución es rediseñar para que esas clases sean gestionadas por Spring o reciban dependencias por constructor."},
+  {label:"Service Locator y Dependency Injection son equivalentes; Spring usa ambos internamente", explain:"Incorrecto. Son enfoques opuestos: DI el contenedor inyecta (pasivo), Service Locator el objeto busca activamente sus dependencias."},
+], correct:1},
+
+// ══════════ MORE STRUCTURAL ══════════
+{cat:"Patrones Estructurales",
+q:"¿Cuándo usarías Decorator vs configurar comportamiento en el constructor?",
+options:[
+  {label:"Decorator es siempre mejor que el constructor porque agrega comportamiento sin modificar la clase", explain:"Incorrecto. Para comportamiento fijo en tiempo de compilación, el constructor puede ser más simple. Decorator brilla cuando el comportamiento debe componerse dinámicamente."},
+  {label:"Decorator cuando necesitas combinar comportamientos dinámicamente en runtime (logging + caching + retry en cualquier orden). Constructor cuando el comportamiento es fijo y conocido en tiempo de diseño.", explain:"Correcto. Ejemplo: CachingPaymentRepository decorando JpaPaymentRepository, decorado por LoggingPaymentRepository. En producción: Logging+Caching. En tests: implementación base sin decoradores. La composición es flexible y reversible."},
+  {label:"Decorator no puede usarse con clases final; para clases finales siempre usar herencia", explain:"Incorrecto. Las clases final no pueden heredarse, precisamente por eso Decorator (composición) es la alternativa: se envuelve la instancia en un wrapper que implementa la misma interfaz."},
+  {label:"Decorator y AOP hacen lo mismo; en proyectos Spring siempre usar AOP y evitar Decorator", explain:"Incorrecto. Son complementarios. AOP es mejor para concerns transversales transparentes. Decorator cuando quieres control explícito sobre la composición y el orden de las capas."},
+], correct:1},
+
+// ══════════ MORE BEHAVIORAL ══════════
+{cat:"Patrones de Comportamiento",
+q:"¿Qué es el patrón Visitor y cuándo lo aplicarías en reportes bancarios?",
+options:[
+  {label:"Visitor es un anti-patrón que viola el encapsulamiento; nunca debe usarse en producción", explain:"Incorrecto. Visitor es un patrón GoF válido. Viola encapsulamiento deliberadamente para agregar operaciones a estructuras de objetos sin modificarlas."},
+  {label:"Visitor permite agregar nuevas operaciones a una estructura de objetos sin modificar las clases elemento. Útil cuando la estructura es estable pero las operaciones cambian. Ejemplo: PdfReportVisitor, ExcelReportVisitor, JsonReportVisitor para jerarquía de transacciones bancarias.", explain:"Correcto. Sin Visitor: cada formato de reporte requiere modificar todas las clases de transacción (viola OCP). Con Visitor: agregar nuevo formato = nueva clase Visitor sin tocar las transacciones. Trade-off: agregar nuevo tipo de transacción requiere modificar todos los Visitors."},
+  {label:"Visitor es lo mismo que Iterator; ambos recorren colecciones aplicando operaciones", explain:"Incorrecto. Iterator recorre colecciones elemento por elemento. Visitor aplica operaciones a estructuras heterogéneas con lógica específica por tipo de elemento."},
+  {label:"Visitor solo funciona con árboles; para listas usar Strategy o Command", explain:"Incorrecto. Visitor funciona con cualquier estructura de objetos con tipos distintos: árboles, grafos, colecciones heterogéneas."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Qué es el patrón Memento y su caso de uso principal?",
+options:[
+  {label:"Memento es lo mismo que Serialization de Java; ambos guardan el estado para recuperarlo después", explain:"Incorrecto. Serialization es un mecanismo. Memento es un patrón que puede usar serialización pero su propósito específico es undo/redo manteniendo encapsulamiento."},
+  {label:"Memento captura el estado interno de un objeto sin violar encapsulamiento para poder restaurarlo. Caso principal: undo/redo. Ejemplo: historial de ediciones de una solicitud de crédito con posibilidad de deshacer cambios.", explain:"Correcto. El Originator crea el Memento y puede restaurarlo; el Caretaker lo almacena sin poder inspeccionar su contenido (encapsulamiento preservado). En banca: undo en formularios de solicitud de préstamo, snapshots de configuraciones antes de cambios."},
+  {label:"Memento es obsoleto porque los Records inmutables reemplazan su funcionalidad", explain:"Incorrecto. Records son inmutables por definición. Memento aplica a objetos con estado mutable que necesita ser capturado en puntos específicos para posible restauración."},
+  {label:"Memento viola el encapsulamiento porque expone el estado interno al Caretaker", explain:"Incorrecto. El diseño del Memento preserva el encapsulamiento: el Caretaker almacena el Memento como objeto opaco sin acceder a su contenido."},
+], correct:1},
+
+// ══════════ DESIGN PRINCIPLES ══════════
+{cat:"SOLID Principles",
+q:"¿Cuáles son los principios DRY, KISS y YAGNI y cómo los aplicas en código bancario?",
+options:[
+  {label:"DRY, KISS y YAGNI son solo convenciones de nomenclatura; no son principios de diseño", explain:"Incorrecto. Son principios fundamentales de ingeniería de software que guían decisiones de diseño y arquitectura."},
+  {label:"DRY: cada pieza de conocimiento con una única representación. KISS: prefiere la solución más simple. YAGNI: no implementes funcionalidad hasta que sea necesaria. En banca: extraer validación de monto (DRY), evitar abstracciones prematuras (KISS), no agregar caché hasta que el performance lo requiera (YAGNI).", explain:"Correcto. DRY: la regla de validación de límite de transferencia repetida en 3 controladores → extraer a ValidadorTransferencia. KISS: un if/else simple vs cadena de responsabilidad para 2 casos. YAGNI: no implementar multi-tenant desde el inicio si solo hay un cliente."},
+  {label:"YAGNI dice que debes implementar todas las funcionalidades posibles desde el inicio para evitar refactoring futuro", explain:"Incorrecto. YAGNI dice lo contrario: no implementes lo que no necesitas ahora. El código no escrito no tiene bugs y no requiere mantenimiento."},
+  {label:"DRY significa que cada clase debe tener un solo archivo; no aplica a la lógica de negocio", explain:"Incorrecto. DRY es sobre conocimiento y lógica, no sobre archivos."},
+], correct:1},
+
+{cat:"SOLID Principles",
+q:"¿Cómo identificas y corriges una violación del Principio de Inversión de Dependencias en Spring?",
+options:[
+  {label:"Una violación de DIP es siempre un error de compilación; el compilador lo detecta", explain:"Incorrecto. Las violaciones de DIP son errores de diseño, no de compilación. El código compila y funciona pero es difícil de testear y mantener."},
+  {label:"Violación: OrderService crea new JpaOrderRepository() internamente. Corrección: interfaz IOrderRepository en el dominio, inyectarla por constructor. Spring inyecta JpaOrderRepository en producción, MockOrderRepository en tests, sin cambiar OrderService.", explain:"Correcto. Señales de violación: new ConcreteClass() en el código de negocio, importar clases de infraestructura (javax.persistence) en la capa de dominio. El dominio debe ser independiente del framework."},
+  {label:"DIP se viola solo cuando usas @Autowired en lugar de constructor injection", explain:"Incorrecto. La forma de inyección no define la violación. El problema es depender de implementaciones concretas en lugar de abstracciones."},
+  {label:"DIP no aplica en Spring Boot porque el framework gestiona todas las dependencias", explain:"Incorrecto. Spring gestiona la inyección pero el desarrollador define de qué depende cada clase. Depender de clase concreta en lugar de interfaz viola DIP aunque Spring lo inyecte."},
+], correct:1},
+
+// ══════════ ENTERPRISE PATTERNS ══════════
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Strangler Fig y cuándo lo aplicarías en migración de monolito a microservicios?",
+options:[
+  {label:"Strangler Fig es una técnica de testing donde se reemplaza el código antiguo con mocks progresivamente", explain:"Incorrecto. Strangler Fig es un patrón de migración de sistemas legacy, no de testing."},
+  {label:"Strangler Fig migra gradualmente un monolito envolviendo funcionalidades con nuevos microservicios. El API Gateway enruta: funcionalidades migradas al microservicio nuevo, el resto al monolito. Migración incremental y reversible sin big bang rewrite.", explain:"Correcto. Proceso: 1) Poner proxy delante del monolito. 2) Implementar módulo (ej: pagos) como microservicio. 3) Redirigir /pagos al nuevo servicio. 4) Verificar. 5) Repetir. En banca: migrar el módulo de transferencias sin dejar de operar el sistema core."},
+  {label:"Strangler Fig requiere reescribir todo el sistema antes de hacer el switch a producción", explain:"Incorrecto. La característica principal de Strangler Fig es precisamente evitar el 'big bang rewrite'. La migración es incremental, módulo por módulo."},
+  {label:"Strangler Fig solo aplica para migrar de Java a otro lenguaje", explain:"Incorrecto. Aplica a cualquier migración incremental: cambio de arquitectura, lenguaje o plataforma."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón API Gateway y qué funciones cumple en microservicios bancarios?",
+options:[
+  {label:"API Gateway es solo un load balancer que distribuye tráfico entre instancias", explain:"Incorrecto. Un load balancer distribuye carga entre instancias del mismo servicio. API Gateway es mucho más rico."},
+  {label:"Punto de entrada único. Funciones: autenticación/autorización centralizada, rate limiting, routing, transformación de requests/responses, SSL termination, logging, circuit breaking y agregación (BFF). En banca: verifica JWT, aplica rate limiting, enruta a microservicios, loguea con Correlation ID.", explain:"Correcto. Sin gateway: cada microservicio implementaría autenticación por separado. AWS API Gateway, Azure APIM, Kong y Spring Cloud Gateway son implementaciones comunes."},
+  {label:"API Gateway aumenta la latencia significativamente y no debe usarse en sistemas bancarios", explain:"Incorrecto. El overhead de un API Gateway bien configurado es ~1-5ms. Los beneficios superan ese costo mínimo."},
+  {label:"API Gateway reemplaza completamente a los microservicios", explain:"Incorrecto. Es una capa de entrada que enruta a los microservicios backend. No contiene lógica de negocio."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Idempotent Consumer y por qué es crítico en sistemas de pagos con Kafka?",
+options:[
+  {label:"Idempotent Consumer significa que Kafka descarta automáticamente mensajes duplicados", explain:"Incorrecto. Kafka no garantiza exactly-once por defecto. El Idempotent Consumer es implementado en el consumidor para manejar mensajes duplicados."},
+  {label:"Garantiza que procesar el mismo mensaje múltiples veces produce el mismo resultado que procesarlo una vez. Implementación: tabla de IDs procesados; antes de procesar verificar si el eventId ya existe. Si sí, descartar. Si no, procesar y registrar. Atómico en la misma transacción de BD.", explain:"Correcto. Con Kafka at-least-once delivery, un pago podría procesarse dos veces. La tabla 'processed_events' registra el eventId de cada pago. El segundo intento encuentra el ID y se descarta sin cobrar. La verificación y registro deben ser atómicos."},
+  {label:"La solución es siempre usar exactly-once semantics (EOS); el Idempotent Consumer es un workaround innecesario", explain:"Incorrecto. EOS tiene overhead y requiere configuración compleja. Idempotent Consumer es más simple y funciona con cualquier sistema de mensajería."},
+  {label:"Idempotent Consumer solo aplica a Kafka; para REST APIs los duplicados no son problema", explain:"Incorrecto. Los duplicados son problema en cualquier comunicación distribuida. La Idempotency-Key en REST APIs es el equivalente para HTTP."},
+], correct:1},
+
+
+{cat:"Patrones de Comportamiento",
+q:"¿Cuál es la diferencia entre Strategy y State, aunque sean estructuralmente similares?",
+options:[
+  {label:"Son idénticos; el nombre depende del libro de referencia", explain:"Incorrecto. Son estructuralmente similares pero con intenciones y dinámicas muy distintas."},
+  {label:"Strategy: el cliente elige y controla el algoritmo externamente. State: el objeto gestiona sus propias transiciones internamente de forma automática. Strategy = algoritmo intercambiable por el cliente; State = máquina de estados interna.", explain:"Correcto. Strategy: el cliente inyecta ValidacionFraudeStrategy; el servicio no sabe cuál tiene. State: Transaccion en estado PENDIENTE transiciona a PROCESANDO internamente al llamar procesar(). La diferencia clave: quién controla el cambio y si hay transiciones automáticas."},
+  {label:"Strategy permite múltiples estrategias activas simultáneamente; State solo permite un estado a la vez", explain:"Incorrecto. Aunque es cierto que hay un estado activo a la vez, esta no es la distinción conceptual principal."},
+  {label:"State requiere interfaces; Strategy puede implementarse con lambdas. Esa es la única diferencia en Java moderno", explain:"Incorrecto. Ambos pueden implementarse con interfaces o lambdas. La diferencia es conceptual: quién controla el cambio."},
+], correct:1},
+
+{cat:"Patrones de Comportamiento",
+q:"¿Qué es el patrón Specification y cómo lo usas para filtros dinámicos en JPA?",
+options:[
+  {label:"Specification es solo el nombre de Spring Data para los métodos de JpaRepository", explain:"Incorrecto. Specification es un patrón de dominio (DDD) para encapsular reglas de negocio combinables. Spring Data JPA lo implementa pero el concepto es independiente del framework."},
+  {label:"Encapsula un criterio de negocio como objeto combinable (AND, OR, NOT). En JPA: implementar Specification<T> por criterio (PorMonto, PorFecha, PorEstado), combinarlos dinámicamente según los filtros del request sin if/else anidados.", explain:"Correcto. Sin Specification: método findByMontoAndFechaAndEstado() o if/else gigante. Con Specification: repo.findAll(where(montoMayorA(1000)).and(fechaEntre(ini,fin)).and(estadoActivo())). Agregar criterio = nueva clase Specification sin modificar el repositorio."},
+  {label:"Specification solo funciona con NoSQL; para SQL Server usar stored procedures", explain:"Incorrecto. Spring Data JPA Specification genera SQL dinámico para cualquier base de datos relacional."},
+  {label:"Specification siempre genera SQL subóptimo comparado con queries nativas", explain:"Incorrecto. Genera SQL estándar optimizable. El rendimiento depende de los índices, no del mecanismo de construcción."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es el patrón Backend for Frontend (BFF) y cuándo lo necesitas?",
+options:[
+  {label:"BFF elimina el frontend por completo; todo se procesa en el servidor", explain:"Incorrecto. BFF crea backends especializados para cada tipo de frontend, no los elimina."},
+  {label:"BFF crea un backend dedicado para cada cliente: BFF-Móvil (respuestas compactas), BFF-Web (respuestas ricas), BFF-B2B (formato estándar). Evita múltiples llamadas del cliente a microservicios para construir una vista.", explain:"Correcto. Sin BFF: la app móvil hace 5 llamadas para mostrar el dashboard. Con BFF-Móvil: una sola llamada que agrega exactamente lo que la app necesita. En banca: app móvil, banca web, cajeros y POS tienen necesidades de datos muy distintas."},
+  {label:"BFF es lo mismo que API Gateway; ambos agregan respuestas de múltiples microservicios", explain:"Incorrecto. API Gateway es infraestructura de entrada (autenticación, routing). BFF es un servicio de aplicación que agrega y transforma datos para un cliente específico."},
+  {label:"BFF solo es necesario cuando tienes más de 10 microservicios", explain:"Incorrecto. La necesidad de BFF depende de la diversidad de clientes y sus requisitos, no del número de microservicios."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Qué es Event Sourcing y cómo difiere del modelo CRUD tradicional?",
+options:[
+  {label:"Event Sourcing es simplemente loguear cambios de BD en un archivo de log para auditoría", explain:"Incorrecto. Event Sourcing es el modelo de datos principal, no un sistema secundario. El estado actual se deriva de la secuencia de eventos."},
+  {label:"Event Sourcing almacena secuencias de eventos inmutables en lugar del estado actual. El estado se reconstruye reproduciendo los eventos. Ventajas: audit trail completo, reconstrucción en cualquier punto del tiempo. En banca: ideal para el libro mayor (ledger).", explain:"Correcto. CRUD: tabla Cuenta con saldo=1000. Event Sourcing: [Depósito(500), Transferencia(-200), Cargo(-50)] → saldo=250. Nunca se pierde historia; se puede auditar cada centavo. La banca tradicional siempre usó event sourcing en el sentido contable."},
+  {label:"Event Sourcing y CRUD son igualmente eficientes; la elección es solo preferencia del equipo", explain:"Incorrecto. Event Sourcing tiene trade-offs reales: reconstruir estado leyendo todos los eventos es más lento que consultar estado actual. Se mitiga con snapshots."},
+  {label:"Event Sourcing solo funciona con bases de datos NoSQL; SQL Server no puede implementarlo", explain:"Incorrecto. Event Sourcing puede implementarse en cualquier base de datos que permita escrituras append-only. SQL Server funciona perfectamente."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Cómo funciona el patrón Bulkhead para prevenir cascada de fallos en microservicios?",
+options:[
+  {label:"Bulkhead es sinónimo de Circuit Breaker; hacen lo mismo con diferentes nombres", explain:"Incorrecto. Son complementarios pero distintos. Circuit Breaker corta comunicación con servicio fallido. Bulkhead aísla recursos para que el fallo de un área no agote los de otras."},
+  {label:"Aísla partes del sistema en compartimentos estancos. Ejemplo: pools de threads separados para SUNAT, RENIEC y core bancario. Si SUNAT se vuelve lento, solo su pool se satura; RENIEC sigue operando con su propio pool.", explain:"Correcto. Sin Bulkhead: un ThreadPool único para todas las llamadas externas. Si SUNAT se vuelve lento y 200 requests quedan esperando, agota el pool y bloquea también las llamadas a RENIEC. Resilience4j implementa Bulkhead."},
+  {label:"Bulkhead solo aplica a bases de datos; para servicios HTTP usar Circuit Breaker exclusivamente", explain:"Incorrecto. Bulkhead aplica a cualquier recurso limitado: threads, conexiones, memoria. El concepto es universal."},
+  {label:"Bulkhead es un patrón de Kubernetes para aislar namespaces; no aplica al diseño de aplicaciones Java", explain:"Incorrecto. Bulkhead es un patrón de diseño de aplicaciones. Resilience4j lo implementa a nivel de aplicación Java."},
+], correct:1},
+
+{cat:"Patrones Enterprise & Arquitectura",
+q:"¿Cuáles son los anti-patrones más comunes en microservicios y cómo los identificas?",
+options:[
+  {label:"Los microservicios no tienen anti-patrones porque su naturaleza distribuida resuelve todos los problemas del monolito", explain:"Incorrecto. Los microservicios introducen su propia categoría de anti-patrones además de preservar algunos del monolito."},
+  {label:"Distributed Monolith (microservicios acoplados que deben desplegarse juntos), Shared Database (múltiples servicios en la misma BD), Chatty Services (demasiadas llamadas HTTP), God Service (un servicio hace demasiado), Nano-services (servicios demasiado pequeños sin valor propio).", explain:"Correcto. Distributed Monolith: tienes la complejidad de microservicios sin sus beneficios. Shared Database: elimina autonomía del servicio. Chatty Services: N+1 queries a nivel de servicios. En banca, el 'servicio de clientes' que hace validación, scoring, KYC y reporting es un God Service."},
+  {label:"El único anti-patrón real es usar SQL en lugar de NoSQL", explain:"Incorrecto. La elección SQL/NoSQL no define si es un anti-patrón. Son problemas de diseño arquitectural independientes del motor de base de datos."},
+  {label:"Los anti-patrones de microservicios solo aplican a sistemas con más de 50 servicios", explain:"Incorrecto. Los anti-patrones aparecen desde el primer servicio. Un Shared Database entre 3 servicios es tan problemático como entre 50."},
+], correct:1},
+
+{cat:"Patrones Estructurales",
+q:"¿Qué es el patrón Flyweight vs Singleton: en qué se diferencian?",
+options:[
+  {label:"Son idénticos porque ambos garantizan una sola instancia de un objeto por clase", explain:"Incorrecto. Singleton garantiza exactamente UNA instancia de una clase. Flyweight gestiona un POOL de instancias reutilizables; puede haber varios Flyweights distintos."},
+  {label:"Singleton: una única instancia global por clase. Flyweight: pool de instancias compartidas para reducir memoria, donde hay múltiples instancias distintas pero reutilizadas. Ejemplo Flyweight: una instancia por divisa (USD, PEN, EUR) compartida entre millones de transacciones.", explain:"Correcto. Singleton = una instancia de Config. Flyweight = 3 instancias de Divisa (una por moneda) compartidas por millones de transacciones. El objetivo de Flyweight es eficiencia de memoria, no unicidad global. Java usa Flyweight en String Pool (una instancia por literal) e Integer Cache."},
+  {label:"Flyweight es mejor que Singleton en todos los casos; Singleton es un anti-patrón en Java moderno", explain:"Incorrecto. Tienen propósitos distintos. Singleton tiene casos de uso válidos (configuración global, conexión única). Anti-patrón no es Singleton en sí, sino el abuso de estado global mutable."},
+  {label:"Flyweight requiere herencia de una clase base; Singleton puede implementarse con cualquier clase", explain:"Incorrecto. Flyweight no requiere herencia. Se implementa con una fábrica que devuelve instancias del pool, independientemente de la jerarquía de clases."},
+], correct:1},
+
+{cat:"Patrones Creacionales",
+q:"¿Cuándo usarías Abstract Factory vs inyección de dependencias de Spring para crear familias de objetos?",
+options:[
+  {label:"Abstract Factory es obsoleto cuando se usa Spring; el contenedor IoC reemplaza completamente este patrón", explain:"Incorrecto. Abstract Factory y Spring DI tienen propósitos distintos. Spring gestiona beans singleton; Abstract Factory crea familias de objetos nuevos con cada llamada."},
+  {label:"Abstract Factory cuando necesitas crear familias coordinadas de objetos en runtime (no beans singleton): instancias nuevas por request, objetos con estado específico del contexto, o cuando la familia varía por tenant/configuración sin que el código cliente sepa cuál familia usa.", explain:"Correcto. Ejemplo: AbstractPaymentFactory con implementaciones SUNATPaymentFactory y VISAPaymentFactory, cada una crea HttpClient + RequestSerializer + ErrorHandler compatibles entre sí. Spring gestiona qué factory inyectar; la factory crea los objetos coordinados. Combinación ideal: Spring para la factory, Abstract Factory para los productos."},
+  {label:"Abstract Factory solo funciona con objetos sin estado (stateless); para objetos con estado usar Builder", explain:"Incorrecto. Abstract Factory puede crear objetos con cualquier tipo de estado. La elección entre Abstract Factory y Builder depende de si creas familias coordinadas vs un objeto complejo con muchos parámetros opcionales."},
+  {label:"La diferencia es solo de nomenclatura; Spring @Configuration con múltiples @Bean métodos es exactamente Abstract Factory", explain:"Incorrecto. @Configuration puede implementar el patrón Abstract Factory, pero no son equivalentes. @Bean methods en Spring crean singletons por defecto; Abstract Factory típicamente crea instancias nuevas."},
+], correct:1},
+
+];
+
+const DB_QUESTIONS = [
+// ══════════ ÍNDICES & CARDINALITY ══════════
+{cat:"Índices & Cardinality",
+q:"¿Qué es la cardinalidad de un índice y por qué impacta directamente en su efectividad?",
+options:[
+  {label:"La cardinalidad es el número de columnas que tiene un índice compuesto; más columnas = más efectivo siempre", explain:"Incorrecto. Eso es el grado del índice (número de columnas). La cardinalidad es la cantidad de valores únicos en una columna."},
+  {label:"La cardinalidad mide cuántos valores distintos tiene una columna. Alta cardinalidad (ej: DNI, email) = índice muy efectivo porque el optimizador puede reducir el resultado a pocos registros. Baja cardinalidad (ej: columna género con 2 valores) = índice ineficiente; un full scan puede ser más rápido.", explain:"Correcto. Ejemplo real: índice en columna 'activo' (true/false, cardinalidad=2) en una tabla de 10M clientes donde el 95% está activo. Al buscar activo=true el índice retorna 9.5M registros — menos eficiente que un full scan. Regla práctica: si el índice no puede descartar al menos el 80-90% de los registros, el optimizador lo ignorará."},
+  {label:"Alta cardinalidad siempre es mala porque genera más entradas en el índice y ocupa más espacio", explain:"Incorrecto. Alta cardinalidad es exactamente lo que hace a un índice eficiente. El espacio adicional es una compensación justificada por la selectividad que permite."},
+  {label:"La cardinalidad no afecta al optimizador SQL; este siempre usa el índice disponible independientemente", explain:"Incorrecto. El optimizador evalúa la cardinalidad (a través de las estadísticas) para decidir si usar el índice o un full scan. Es una de las métricas más importantes en la toma de decisión del query plan."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Cuál es la diferencia entre Clustered Index y Non-Clustered Index en SQL Server?",
+options:[
+  {label:"Clustered Index es más lento porque ordena físicamente los datos; Non-Clustered es siempre preferible", explain:"Incorrecto. No hay una opción 'siempre preferible'. Cada tipo tiene su caso de uso. El Clustered Index es muy eficiente para rangos de valores ya que los datos están físicamente ordenados."},
+  {label:"Clustered Index: determina el orden físico de los datos en disco (solo puede haber uno por tabla). Non-Clustered: estructura separada con punteros a los datos (pueden haber varios). Reads en rango: Clustered gana. Búsquedas puntuales por columnas no-PK: Non-Clustered.", explain:"Correcto. La PK genera automáticamente un Clustered Index en SQL Server. Un Clustered Index en fecha_transaccion hace que todas las consultas por rango de fechas sean muy eficientes (los datos están físicamente contiguos). Non-Clustered en numero_cuenta permite búsquedas rápidas por cuenta sin reorganizar los datos físicos."},
+  {label:"SQL Server permite múltiples Clustered Indexes por tabla para optimizar distintos patrones de acceso", explain:"Incorrecto. Solo puede existir un Clustered Index por tabla porque determina el orden físico de almacenamiento, y los datos físicos solo pueden estar ordenados de una manera."},
+  {label:"Non-Clustered Index almacena una copia completa de la tabla ordenada; por eso ocupa el doble de espacio", explain:"Incorrecto. Non-Clustered almacena las columnas del índice más un puntero (RID o la clave del Clustered Index) al registro. Un Covering Index puede incluir columnas adicionales pero no es una copia completa de la tabla."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Qué es un Covering Index y cuándo lo crearías en un sistema bancario de alto volumen?",
+options:[
+  {label:"Un Covering Index cubre toda la tabla con un único índice para evitar múltiples índices", explain:"Incorrecto. Covering Index (índice cubriente) es un Non-Clustered Index que incluye todas las columnas que una query específica necesita, evitando un Key Lookup al Clustered Index."},
+  {label:"Non-Clustered Index que incluye en su estructura todas las columnas que necesita una query (via INCLUDE), eliminando el Key Lookup. Ideal para queries críticas frecuentes: el motor lee solo el índice sin tocar la tabla base.", explain:"Correcto. Ejemplo: query frecuente SELECT numero_cuenta, saldo, estado FROM cuentas WHERE cliente_id = ?. Crear: CREATE INDEX IX_cuentas_cliente ON cuentas(cliente_id) INCLUDE (numero_cuenta, saldo, estado). El motor satisface la query leyendo solo el índice. Sin el INCLUDE, haría un Key Lookup por cada fila encontrada (costoso en alta concurrencia). Muy útil en tablas de transacciones con millones de registros."},
+  {label:"Covering Index es lo mismo que un índice compuesto con múltiples columnas en la clave", explain:"Incorrecto. Un índice compuesto pone las columnas en la clave del índice (afecta el orden de búsqueda). INCLUDE agrega columnas solo a las páginas hoja del índice sin formar parte de la clave. Columnas en INCLUDE no mejoran búsquedas por esos campos pero sí eliminan Key Lookups."},
+  {label:"Covering Index degrada el rendimiento de escrituras más que un índice normal y debe evitarse en tablas transaccionales", explain:"Incorrecto. Todo índice tiene costo de escritura (INSERT/UPDATE/DELETE deben actualizar el índice). El Covering Index tiene algo más de overhead que un índice simple por las columnas incluidas, pero en tablas con alta proporción de lecturas el beneficio supera ese costo."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Qué es la fragmentación de índices y cómo la resuelves en SQL Server en producción?",
+options:[
+  {label:"La fragmentación ocurre cuando hay demasiados índices en una tabla; se resuelve eliminando los menos usados", explain:"Incorrecto. La fragmentación es el desalineamiento de las páginas lógicas y físicas del índice, no la cantidad de índices."},
+  {label:"La fragmentación ocurre con INSERTs/UPDATEs/DELETEs que desordenan las páginas del índice. <30% fragmentación: REORGANIZE (online, no bloquea). >30%: REBUILD (recrea el índice, más rápido pero bloquea en versiones sin ONLINE=ON). Ajustar Fill Factor para prevenir fragmentación futura.", explain:"Correcto. Fill Factor define qué porcentaje de cada página se llena al crear/reconstruir el índice (ej: 80% deja 20% libre para futuras inserciones). En tablas con muchos INSERTs, un Fill Factor de 70-80% reduce la frecuencia de fragmentación. REBUILD con ONLINE=ON en SQL Server Enterprise permite reconstruir sin bloquear lecturas, critical en BD bancarias 24/7."},
+  {label:"La fragmentación solo afecta a Non-Clustered Indexes; el Clustered Index nunca se fragmenta", explain:"Incorrecto. Ambos tipos de índice se fragmentan. El Clustered Index se fragmenta con inserciones fuera de orden respecto a su clave (ej: GUID como PK genera fragmentación masiva vs INT IDENTITY secuencial)."},
+  {label:"La única solución a la fragmentación es eliminar y recrear la tabla completa durante una ventana de mantenimiento", explain:"Incorrecto. REORGANIZE y REBUILD son las operaciones específicas para esto. Recrear la tabla completa es innecesariamente costoso y disruptivo cuando existen operaciones dedicadas."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Por qué aplicar una función sobre una columna indexada elimina la ventaja del índice?",
+options:[
+  {label:"Las funciones no afectan al uso del índice; el optimizador las maneja transparentemente", explain:"Incorrecto. Aplicar funciones sobre columnas indexadas impide que el optimizador use el índice eficientemente porque el valor transformado no está en el índice."},
+  {label:"WHERE YEAR(fecha_transaccion) = 2025 impide usar el índice de fecha porque el optimizador no puede buscar en el índice con el valor transformado. Solución: WHERE fecha_transaccion >= '2025-01-01' AND fecha_transaccion < '2026-01-01' — permite Index Seek.", explain:"Correcto. El índice almacena los valores originales de fecha_transaccion. La función YEAR() transforma cada valor durante la evaluación, forzando un scan de todas las filas. Al usar BETWEEN o >= y <, el optimizador puede ir directamente al rango en el índice (Index Seek). Mismo problema con: UPPER(email) = 'USUARIO@BANCO.COM', CAST(id AS VARCHAR) = '123', LEFT(codigo, 3) = 'TRX'."},
+  {label:"Solo las funciones de agregación (SUM, COUNT) afectan el uso de índices; las funciones escalares no", explain:"Incorrecto. Cualquier función aplicada sobre la columna indexada en el WHERE impide el Index Seek. Las funciones escalares (YEAR, UPPER, CAST, LEFT) son igual de problemáticas."},
+  {label:"La solución es crear un índice funcional que indexe el resultado de la función", explain:"Incorrecto parcialmente. SQL Server no tiene índices funcionales como PostgreSQL, pero tiene Computed Columns persistidas sobre las que sí se puede indexar. Sin embargo, la solución más simple y eficiente es reescribir la query para evitar la función sobre la columna indexada."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Qué es un índice compuesto y cuál es la regla del prefijo izquierdo?",
+options:[
+  {label:"Un índice compuesto cubre automáticamente cualquier subconjunto de sus columnas en cualquier orden", explain:"Incorrecto. Solo funciona con el prefijo izquierdo: las columnas del índice en orden de izquierda a derecha. Saltar la primera columna invalida el uso del índice."},
+  {label:"Índice en múltiples columnas. Regla del prefijo izquierdo: el índice IX(A,B,C) puede usarse para queries que filtran por A, por A+B, o por A+B+C, pero NO solo por B o solo por C. La primera columna siempre debe estar en el WHERE.", explain:"Correcto. CREATE INDEX IX_trans ON transacciones(cliente_id, fecha, estado). Úsable: WHERE cliente_id=1 (✓), WHERE cliente_id=1 AND fecha>'2025' (✓), WHERE cliente_id=1 AND fecha>'2025' AND estado='ACTIVO' (✓). No úsable eficientemente: WHERE fecha>'2025' sin cliente_id (✗), WHERE estado='ACTIVO' sin cliente_id (✗). El orden de columnas importa: columna con mayor cardinalidad y más usada en WHERE va primero."},
+  {label:"El orden de columnas en un índice compuesto no importa; el optimizador reordena automáticamente", explain:"Incorrecto. El orden importa criticamente. El índice está físicamente ordenado por la primera columna, luego la segunda dentro de cada valor de la primera, etc. El optimizador solo puede usar el índice empezando desde la primera columna."},
+  {label:"Un índice compuesto siempre es más lento que múltiples índices simples porque cubre más columnas", explain:"Incorrecto. Un índice compuesto bien diseñado es más eficiente que múltiples índices simples para queries que filtran por varias columnas. El optimizador debe elegir un índice por consulta (o hacer index intersect), mientras el compuesto satisface la query en un solo recorrido."},
+], correct:1},
+
+// ══════════ PERFORMANCE & QUERY PLANS ══════════
+{cat:"Performance & Query Plans",
+q:"¿Cómo usas un Execution Plan para diagnosticar una query lenta en SQL Server?",
+options:[
+  {label:"El Execution Plan muestra solo el tiempo total de ejecución; para detalles hay que usar SQL Profiler", explain:"Incorrecto. El Execution Plan muestra mucho más: tipo de operación por nodo (Scan, Seek, Hash Join), costo estimado vs real, número de filas, operaciones costosas, índices faltantes sugeridos."},
+  {label:"Analizar: operaciones costosas (nodos con mayor porcentaje de costo), tipo de acceso (Table Scan vs Index Seek), Hash Join vs Nested Loop, filas estimadas vs reales (indica estadísticas desactualizadas), y sugerencias de índices faltantes (triángulo amarillo).", explain:"Correcto. Proceso práctico: 1) Identificar el nodo con mayor costo (%). 2) Si es Table Scan en tabla grande → crear índice. 3) Si filas estimadas difieren mucho de reales → UPDATE STATISTICS. 4) Si hay Hash Join en tablas pequeñas → puede ser mejor Nested Loop con índice. 5) Si hay Sort costoso → agregar la columna de ordenación al índice. La advertencia de índice faltante sugiere automáticamente la columna y el INCLUDE."},
+  {label:"Para diagnosticar queries lentas solo se necesita revisar los locks activos; el Execution Plan no ayuda con problemas de rendimiento", explain:"Incorrecto. Los locks son una causa posible de lentitud pero el Execution Plan diagnostica la eficiencia del plan de acceso a datos: índices, joins, sorts. Ambos análisis son complementarios."},
+  {label:"El Execution Plan es igual al EXPLAIN de PostgreSQL; la interpretación es idéntica en ambas bases de datos", explain:"Incorrecto. Son herramientas análogas pero con diferente formato y terminología. SQL Server muestra costos en porcentaje y usa términos como 'Clustered Index Scan', 'Key Lookup'. PostgreSQL usa 'Seq Scan', 'Index Scan' con costos en unidades arbitrarias. La interpretación requiere conocer el motor específico."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"En un sistema bancario de alta concurrencia, ¿qué estrategias aplicas para optimizar el rendimiento de la BD?",
+options:[
+  {label:"Aumentar el hardware (más RAM y CPU) es siempre la solución más efectiva y debe hacerse primero", explain:"Incorrecto. El hardware puede mitigar síntomas pero no resuelve problemas de diseño. Una query sin índice en una tabla de 100M registros seguirá siendo lenta con cualquier hardware si hace un full scan."},
+  {label:"Combinación de: indexación correcta (alta cardinalidad, prefijo izquierdo, covering), optimización de queries (evitar SELECT *, funciones en WHERE, reducir subqueries), caché (Redis para datos frecuentes), pool de conexiones calibrado (HikariCP), separar carga OLTP de reportería (réplica de lectura), y particionamiento de tablas grandes.", explain:"Correcto. En producción el orden de impacto suele ser: 1) Índices correctos (mayor impacto, costo bajo). 2) Reescribir queries problemáticas. 3) Caché para datos estables (tipos de cambio, catálogos). 4) Réplica de lectura para reportes. 5) Particionamiento para tablas >100M registros. 6) Sharding si el volumen supera la capacidad de un nodo. El hardware es el último recurso."},
+  {label:"La solución principal es usar NoSQL en lugar de SQL; las BDs relacionales no escalan en alta concurrencia", explain:"Incorrecto. SQL puede escalar masivamente con el diseño correcto. Los bancos más grandes del mundo usan BD relacionales para sus operaciones transaccionales. NoSQL tiene sus casos de uso pero no es la solución universal."},
+  {label:"Deshabilitar los índices durante picos de carga para evitar el overhead de mantenimiento de índices en writes", explain:"Incorrecto. Deshabilitar índices elimina la capacidad de hacer búsquedas eficientes. El overhead de mantenimiento de índices en writes es real pero generalmente mucho menor que el costo de reads sin índice en sistemas con alta proporción de lecturas."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Qué son las estadísticas de SQL Server y cuándo se vuelven problemáticas?",
+options:[
+  {label:"Las estadísticas son metadatos de permisos de usuario; no afectan al rendimiento de las queries", explain:"Incorrecto. Las estadísticas son histogramas que describen la distribución de valores en columnas/índices. Son fundamentales para que el optimizador estime el número de filas y elija el plan correcto."},
+  {label:"Histogramas que describen la distribución de datos en columnas. El optimizador las usa para estimar filas y elegir el plan. Se vuelven problemáticas cuando están desactualizadas (tras bulk inserts/deletes masivos): el optimizador elige planes subóptimos porque sus estimaciones son incorrectas.", explain:"Correcto. Señal de estadísticas desactualizadas en el Execution Plan: filas estimadas muy diferentes de las reales (ej: estimó 100 filas, procesó 1,000,000). Solución: UPDATE STATISTICS tabla (con fullscan en tablas críticas). En SQL Server, AUTO_UPDATE_STATISTICS está habilitado por defecto pero puede no ejecutarse con suficiente frecuencia en tablas que cambian rápidamente. Buena práctica: job nocturno que actualiza estadísticas de las tablas más activas."},
+  {label:"Las estadísticas siempre están actualizadas en SQL Server porque se actualizan con cada INSERT/UPDATE/DELETE", explain:"Incorrecto. AUTO_UPDATE_STATISTICS se dispara cuando aproximadamente el 20% de las filas cambian (umbral configurable). En tablas grandes con cambios frecuentes, el 20% puede representar millones de cambios, y las estadísticas pueden quedar obsoletas por horas."},
+  {label:"Actualizar estadísticas bloquea la tabla completamente y debe hacerse solo en ventanas de mantenimiento nocturnas", explain:"Incorrecto. UPDATE STATISTICS por defecto usa SAMPLE (muestra) que es rápido y no bloquea significativamente. FULLSCAN es más preciso pero más lento. En SQL Server, UPDATE STATISTICS no bloquea lecturas ni escrituras (usa snapshot aislado)."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Qué es el problema N+1 en ORM y cómo lo detectas y resuelves?",
+options:[
+  {label:"N+1 significa que la BD tiene N+1 tablas; se resuelve normalizando el esquema", explain:"Incorrecto. N+1 es un problema de queries generadas por ORM: 1 query para obtener N registros padre + N queries adicionales (una por cada padre) para obtener los hijos."},
+  {label:"ORM hace 1 query para cargar N entidades padre y luego N queries adicionales para cargar las relaciones lazy de cada una. Detección: Hibernate Statistics, logs de SQL, Datadog. Solución: JOIN FETCH en JPQL, @EntityGraph, o Batch Size en la anotación.", explain:"Correcto. Ejemplo clásico: cargar 100 clientes y luego acceder a cliente.getCuentas() por cada uno → 101 queries. Solución JPQL: SELECT c FROM Cliente c JOIN FETCH c.cuentas WHERE c.activo = true → 1 sola query con JOIN. Para colecciones grandes: @BatchSize(size=20) hace queries de 20 en 20 en lugar de 1 por registro. En sistemas bancarios con reportes de cuentas por cliente, N+1 puede multiplicar el tiempo de respuesta por 100x."},
+  {label:"N+1 solo ocurre con FetchType.EAGER; cambiando todas las relaciones a LAZY se resuelve automáticamente", explain:"Incorrecto. N+1 ocurre precisamente con LAZY cuando accedes a las relaciones dentro de un loop. Con EAGER también hay problemas (carga datos innecesarios). La solución real es controlar qué se carga con JOIN FETCH o @EntityGraph según la necesidad de cada query."},
+  {label:"La solución siempre es usar SQL nativo en lugar de ORM; ORM es la causa de todos los problemas de N+1", explain:"Incorrecto. ORM tiene herramientas para resolver N+1 (JOIN FETCH, EntityGraph). SQL nativo también puede generar N+1 si el desarrollador lo implementa con un loop. El problema es la lógica de acceso a datos, no el ORM en sí."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Cómo configuras HikariCP para un microservicio transaccional de alto volumen?",
+options:[
+  {label:"Usar el máximo de conexiones posibles (ej: 500) para garantizar que nunca haya espera por conexión disponible", explain:"Incorrecto. Más conexiones no siempre es mejor. SQL Server tiene límite de conexiones concurrentes eficientes. Demasiadas conexiones generan overhead de context switching en el motor de BD y pueden degradar el rendimiento global."},
+  {label:"Parámetros clave: maximumPoolSize = (núcleos_CPU_BD × 2) + spindles ≈ 10-20 para la mayoría de casos. minimumIdle para evitar overhead de creación. connectionTimeout para fallar rápido. maxLifetime para renovar conexiones y evitar conexiones muertas. Alinear con el thread pool de la aplicación.", explain:"Correcto. La fórmula de HikariCP: pool pequeño + cola de espera = mejor throughput que pool grande. Ejemplo para BD con 8 núcleos: maximumPoolSize=20, minimumIdle=10, connectionTimeout=30000, maxLifetime=1800000 (30min). Regla crítica: replicas × maximumPoolSize ≤ capacidad_conexiones_BD. Con 10 pods × 20 conexiones = 200 conexiones al pool de BD. Si BD soporta 300, hay margen. Si soporta 100, hay saturación."},
+  {label:"HikariCP se configura igual en todos los ambientes; no hay diferencia entre desarrollo y producción", explain:"Incorrecto. En desarrollo: pool pequeño, timeouts largos para debugging. En producción: pool calibrado por carga real, timeouts ajustados al SLA, keepalive habilitado, métricas de pool monitoreadas. La configuración de producción debe validarse con pruebas de carga."},
+  {label:"maximumPoolSize debe igualarse exactamente al número de threads de la aplicación para evitar timeouts", explain:"Incorrecto. No todas las operaciones necesitan conexión a BD simultáneamente. Un thread que procesa lógica de negocio pura no necesita conexión. El pool puede ser más pequeño que el thread pool si las operaciones de BD no son 100% concurrentes."},
+], correct:1},
+
+// ══════════ JDBC, JPA & SPRING BOOT ══════════
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Cuál es la diferencia entre Statement y PreparedStatement y por qué es crítica en banca?",
+options:[
+  {label:"PreparedStatement es más lento que Statement porque tiene overhead de precompilación", explain:"Incorrecto. PreparedStatement es más rápido en ejecuciones repetidas porque el plan de ejecución se compila una sola vez y se reutiliza. Statement compila el plan en cada ejecución."},
+  {label:"Statement: concatena strings directamente → vulnerable a SQL Injection + recompila el plan en cada ejecución. PreparedStatement: parámetros separados del SQL (?) → inmune a SQL Injection + plan precompilado reutilizable. En banca es crítico por seguridad y rendimiento.", explain:"Correcto. SQL Injection con Statement: String sql = 'SELECT * FROM cuentas WHERE id = ' + input; si input = '1 OR 1=1', retorna todas las cuentas. PreparedStatement: ps = conn.prepareStatement('SELECT * FROM cuentas WHERE id = ?'); ps.setLong(1, id); — el input se trata siempre como dato, nunca como SQL. Además, en sistemas con miles de queries/segundo, reutilizar el plan de ejecución reduce significativamente la carga de CPU en el motor de BD."},
+  {label:"La diferencia entre Statement y PreparedStatement solo importa en queries con más de 3 parámetros", explain:"Incorrecto. La vulnerabilidad a SQL Injection y la falta de reutilización del plan existen con cualquier número de parámetros, incluso con cero si hay concatenación dinámica."},
+  {label:"Spring Data JPA usa Statement internamente para mejor rendimiento; PreparedStatement es solo para JDBC puro", explain:"Incorrecto. Spring Data JPA (Hibernate) usa PreparedStatement para todas las queries, tanto las generadas automáticamente como las definidas con @Query. Esto garantiza seguridad y reutilización del plan por defecto."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Qué anotaciones JPA son esenciales para mapear una entidad bancaria y qué hace cada una?",
+options:[
+  {label:"Solo @Entity es necesaria; el resto de anotaciones son opcionales y JPA infiere todo automáticamente", explain:"Incorrecto. Sin @Id no hay clave primaria definida y la entidad no es válida. Sin @Table, JPA usa el nombre de la clase como nombre de tabla (puede no coincidir). Sin @Column, usa el nombre del campo (sensible a mayúsculas según el motor)."},
+  {label:"@Entity (marca la clase como entidad JPA), @Table (nombre de tabla en BD), @Id (clave primaria), @GeneratedValue (estrategia de generación: IDENTITY para auto-increment SQL Server), @Column (nombre y constraints), @OneToMany/@ManyToOne con @JoinColumn para relaciones.", explain:"Correcto. Ejemplo completo: @Entity @Table(name='transacciones') class Transaccion { @Id @GeneratedValue(strategy=IDENTITY) @Column(name='id_transaccion') Long id; @Column(name='monto', nullable=false, precision=18, scale=2) BigDecimal monto; @ManyToOne @JoinColumn(name='id_cuenta_fk') Cuenta cuenta; }. IDENTITY en SQL Server usa la columna IDENTITY del motor. Usar precision y scale en BigDecimal para montos monetarios es crítico."},
+  {label:"@ManyToOne siempre debe usarse con FetchType.EAGER para garantizar que los datos relacionados estén disponibles", explain:"Incorrecto. FetchType.EAGER en @ManyToOne carga la entidad relacionada siempre, incluso cuando no se necesita. En transacciones que se procesan en bulk, esto puede generar carga innecesaria. La recomendación general de Hibernate es LAZY para todas las relaciones y usar JOIN FETCH cuando se necesiten."},
+  {label:"@GeneratedValue con estrategia UUID es siempre preferible a IDENTITY en sistemas bancarios por mayor unicidad", explain:"Incorrecto. UUID como PK genera fragmentación masiva de Clustered Index (los UUIDs son aleatorios, no secuenciales). En tablas de transacciones de alto volumen, esto es muy perjudicial. Usar NEWSEQUENTIALID() de SQL Server o IDENTITY (secuencial) para la PK. UUID puede usarse como identificador de negocio adicional (columna separada)."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Cuándo deshabilitas el auto-commit en JDBC y qué riesgos conlleva no hacerlo?",
+options:[
+  {label:"El auto-commit debe estar siempre habilitado en sistemas de alta concurrencia para maximizar el throughput", explain:"Incorrecto. Auto-commit habilitado significa que cada statement es una transacción separada. En operaciones que requieren atomicidad (débito + crédito en una transferencia), auto-commit puede dejar la BD en estado inconsistente si falla el segundo statement."},
+  {label:"Deshabilitar auto-commit cuando necesitas atomicidad entre múltiples statements (ej: débito de cuenta origen + crédito de cuenta destino en una transferencia). Sin control manual: si el débito se ejecuta pero el crédito falla, el dinero desaparece. Con transacción manual: rollback deshace ambos.", explain:"Correcto. conn.setAutoCommit(false); try { debitarCuenta(conn, origen, monto); acreditarCuenta(conn, destino, monto); conn.commit(); } catch(Exception e) { conn.rollback(); }. En Spring Boot, @Transactional hace esto automáticamente: deshabilita auto-commit al inicio del método y hace commit/rollback al final. Sin @Transactional en operaciones multi-step, el riesgo de inconsistencia es real."},
+  {label:"Auto-commit solo afecta a operaciones SELECT; para INSERT/UPDATE/DELETE siempre hay una transacción implícita independientemente", explain:"Incorrecto. Con auto-commit=true, cada DML (INSERT, UPDATE, DELETE) es inmediatamente visible y no puede deshacerse. El commit es automático e implícito después de cada statement."},
+  {label:"En Spring Boot con @Transactional no es necesario preocuparse por auto-commit; el framework lo maneja de forma diferente al JDBC estándar", explain:"Incorrecto parcialmente. @Transactional sí gestiona las transacciones automáticamente (incluyendo auto-commit), pero entender el mecanismo subyacente es esencial para diagnosticar problemas como transacciones anidadas, propagación incorrecta, o el problema de auto-commit en queries fuera de un contexto transaccional."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Qué es R2DBC y cuándo lo usarías en lugar de JDBC en un sistema bancario?",
+options:[
+  {label:"R2DBC es una versión más nueva de JDBC con mejor rendimiento; siempre debe preferirse en proyectos nuevos", explain:"Incorrecto. R2DBC es para programación reactiva (no bloqueante). No es una versión mejorada de JDBC para todos los casos; es para un paradigma de programación diferente."},
+  {label:"R2DBC es el driver de BD no bloqueante para programación reactiva (WebFlux/Project Reactor). Usar cuando la aplicación es completamente reactiva y se necesita que las queries de BD no bloqueen hilos. JDBC bloquea el hilo mientras espera respuesta de BD, rompiendo la reactividad.", explain:"Correcto. Con WebFlux, si usas JDBC, cada query de BD bloquea un thread del event loop, anulando las ventajas del modelo reactivo. R2DBC mantiene el pipeline reactivo hasta la BD: Mono<Cuenta> findByNumeroCuenta(String numero) retorna un Mono que se resuelve de forma no bloqueante. Limitación: R2DBC tiene soporte más limitado que JPA (no hay caché de segundo nivel, no todas las features de Hibernate). Contexto bancario: si el flujo de pagos es reactivo de punta a punta, R2DBC es necesario; si hay partes síncronas, JDBC puede coexistir usando subscribeOn(boundedElastic())."},
+  {label:"R2DBC es mejor que JDBC en todos los casos porque usa menos memoria al no bloquear hilos", explain:"Incorrecto. R2DBC es óptimo en sistemas I/O-bound totalmente reactivos. En sistemas sincrónicos tradicionales, R2DBC añade complejidad sin beneficio real. El uso de memoria depende del número de operaciones concurrentes, no solo del driver."},
+  {label:"R2DBC no soporta transacciones; por eso JDBC sigue siendo necesario para operaciones críticas en banca", explain:"Incorrecto. R2DBC soporta transacciones a través de la interfaz ReactiveTransactionManager de Spring. @Transactional funciona con R2DBC en aplicaciones WebFlux correctamente configuradas."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Cómo implementas paginación eficiente en una tabla de transacciones con 100 millones de registros?",
+options:[
+  {label:"OFFSET/LIMIT es siempre la solución correcta para paginación; es la más simple y compatible con todos los motores", explain:"Incorrecto. OFFSET/LIMIT (o OFFSET/FETCH en SQL Server) se vuelve extremadamente lento en páginas altas porque el motor debe recorrer y descartar todos los registros anteriores. OFFSET 5000000 ROWS FETCH NEXT 20 ROWS lee 5M registros para retornar 20."},
+  {label:"Keyset Pagination (Seek Method) sobre el índice de la PK o una columna ordenada: WHERE id > :lastSeenId ORDER BY id FETCH NEXT 20 ROWS ONLY. Rendimiento constante O(1) independientemente de la página. OFFSET/LIMIT se vuelve O(n) en páginas profundas.", explain:"Correcto. Keyset: SELECT * FROM transacciones WHERE id > 5000000 ORDER BY id FETCH NEXT 20 ROWS ONLY. El índice de la PK permite ir directamente al punto de inicio sin recorrer registros previos. Limitación: no permite saltar a página arbitraria (página 5000). Para interfaces tipo 'scroll infinito' o APIs paginadas secuencialmente, es la solución ideal. Spring Data JPA: @Query('SELECT t FROM Transaccion t WHERE t.id > :cursor ORDER BY t.id') Page<Transaccion> findNextPage(Long cursor, Pageable pageable)."},
+  {label:"Para tablas grandes la solución es siempre cachear todos los datos en Redis y paginar en memoria", explain:"Incorrecto. Una tabla de 100M transacciones puede ocupar decenas de GB. Cachear todo es inviable. La paginación eficiente en BD es la solución correcta, no transferir todos los datos a memoria."},
+  {label:"La paginación no es necesaria en sistemas modernos con JSON streaming; se envían todos los registros al cliente", explain:"Incorrecto. Enviar millones de registros al cliente es inviable en términos de memoria, ancho de banda y tiempo de respuesta. La paginación es esencial para cualquier consulta que pueda retornar muchos resultados."},
+], correct:1},
+
+// ══════════ ALTA CONCURRENCIA & TRANSACCIONES ══════════
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Cuáles son los niveles de aislamiento de transacciones y cuándo usarías cada uno en banca?",
+options:[
+  {label:"Hay solo dos niveles: READ COMMITTED y SERIALIZABLE. SERIALIZABLE siempre debe usarse en banca por seguridad", explain:"Incorrecto. Hay cuatro niveles estándar. SERIALIZABLE garantiza máxima consistencia pero es el más costoso en concurrencia; usarlo para todo genera bloqueos excesivos."},
+  {label:"READ UNCOMMITTED (dirty reads, nunca en banca), READ COMMITTED (default SQL Server, lee solo commits), REPEATABLE READ (misma query retorna mismos resultados en la transacción), SERIALIZABLE (máximo aislamiento, sin phantom reads, más bloqueos). READ COMMITTED con Snapshot Isolation (RCSI) es óptimo para banca.", explain:"Correcto. SQL Server tiene READ COMMITTED SNAPSHOT ISOLATION (RCSI): los readers no bloquean writers (usa versioning en tempdb). Ideal para sistemas bancarios de alta concurrencia donde lecturas no deben bloquear escrituras. SERIALIZABLE para operaciones críticas específicas (verificar y actualizar saldo en una sola transacción). Nunca READ UNCOMMITTED en operaciones financieras: podrías leer un débito que luego se revierte."},
+  {label:"El nivel de aislamiento no afecta al rendimiento; solo afecta la consistencia de los datos", explain:"Incorrecto. SERIALIZABLE genera lock ranges que pueden bloquear miles de transacciones concurrentes. READ UNCOMMITTED es el más rápido pero menos seguro. Hay un trade-off directo entre consistencia y concurrencia que impacta directamente el rendimiento."},
+  {label:"En Spring Boot @Transactional, el nivel de aislamiento siempre es SERIALIZABLE por defecto para garantizar seguridad", explain:"Incorrecto. El default de @Transactional en Spring es Isolation.DEFAULT, que usa el nivel por defecto del motor de BD. Para SQL Server, ese default es READ COMMITTED. Para cambiar: @Transactional(isolation = Isolation.SERIALIZABLE)."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Qué son los deadlocks en BD y cómo los previenes en operaciones de transferencia bancaria?",
+options:[
+  {label:"Los deadlocks son transacciones que tardan demasiado; se previenen con timeout en todas las queries", explain:"Incorrecto. Los deadlocks son situaciones donde dos o más transacciones se bloquean mutuamente esperando locks que la otra tiene. No tienen relación directa con el tiempo de ejecución."},
+  {label:"Deadlock: Tx1 tiene lock de CuentaA y espera CuentaB; Tx2 tiene lock de CuentaB y espera CuentaA. SQL Server mata la víctima (menor costo). Prevención: acceder siempre a recursos en el mismo orden (siempre lockear la cuenta con menor ID primero), transacciones cortas, índices para reducir granularidad de locks.", explain:"Correcto. Regla del orden consistente: en transferencia A→B, siempre lockear min(A,B) primero, luego max(A,B). Así no hay espera circular. Transacciones cortas reducen la ventana de tiempo en que se mantienen los locks. Índices adecuados reducen la cantidad de registros lockeados (row-level locks vs page locks vs table locks). SQL Server con RCSI reduce drasticamente deadlocks entre readers y writers."},
+  {label:"Los deadlocks solo ocurren con cursores explícitos; usando queries normales SELECT/INSERT/UPDATE no hay deadlocks", explain:"Incorrecto. Los deadlocks ocurren con cualquier operación que adquiera locks: UPDATE, DELETE, INSERT en tabla con FK. Son especialmente comunes en tablas con alta concurrencia y muchas relaciones."},
+  {label:"La solución definitiva a los deadlocks es usar READ UNCOMMITTED en todas las transacciones", explain:"Incorrecto. READ UNCOMMITTED resuelve deadlocks entre readers y writers porque los readers no adquieren locks compartidos. Pero los escritores siguen bloqueándose entre sí, y READ UNCOMMITTED introduce riesgo de datos sucios. En banca, no es una solución aceptable."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Cómo funcionan los distributed locks con Redis para proteger operaciones críticas entre microservicios?",
+options:[
+  {label:"Los distributed locks de Redis son innecesarios si usas transacciones de BD; la BD ya maneja el locking", explain:"Incorrecto. Los locks de BD protegen datos dentro de una sola BD. En microservicios con múltiples servicios e instancias, necesitas coordinar acceso a recursos compartidos fuera del alcance de una sola transacción de BD."},
+  {label:"Redisson o SET NX EX implementan un mutex distribuido: el primer servicio que adquiere el lock (SET transaccion:123 locked NX EX 30) procede; los demás esperan o fallan rápido. Previene procesamiento duplicado de la misma transacción en múltiples instancias.", explain:"Correcto. Escenario: 3 pods del servicio de pagos reciben el mismo mensaje Kafka (retry). Sin distributed lock, los 3 procesan el mismo pago. Con Redisson RLock: el primer pod adquiere el lock (llave: 'pago:TRX-001'), los otros detectan que el lock está tomado y evitan procesar. El TTL (EX 30s) garantiza que el lock se libere aunque el pod falle. Complementa el Idempotent Consumer: el lock previene el procesamiento concurrente; la tabla de eventos procesados previene el procesamiento duplicado secuencial."},
+  {label:"Distributed locks con Redis son más seguros que los locks de BD porque Redis nunca pierde datos", explain:"Incorrecto. Redis es in-memory y puede perder datos ante fallos sin persistencia configurada. Los locks de BD son más duraderos pero más lentos. Los distributed locks de Redis se usan por velocidad y alcance distribuido, no por mayor durabilidad."},
+  {label:"SET NX EX en Redis garantiza exactamente-una-vez (exactly-once) para cualquier operación distribuida", explain:"Incorrecto. El distributed lock reduce la probabilidad de procesamiento duplicado pero no garantiza exactly-once absoluto (hay edge cases con particiones de red). Para exactly-once garantizado, se combina con el patrón Idempotent Consumer que verifica si la operación ya fue procesada."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Qué es el Optimistic Locking vs Pessimistic Locking y cuándo aplicar cada uno en banca?",
+options:[
+  {label:"Pessimistic Locking siempre debe usarse en sistemas bancarios porque garantiza consistencia total", explain:"Incorrecto. Pessimistic Locking bloquea registros desde el inicio de la transacción (SELECT FOR UPDATE). En alta concurrencia, esto crea cuellos de botella severos en cuentas populares (como una cuenta de empresa con miles de transacciones simultáneas)."},
+  {label:"Optimistic: asume que no habrá conflicto, usa un campo @Version que incrementa en cada UPDATE. Si dos transacciones modifican el mismo registro, la segunda falla con OptimisticLockException y hace retry. Mejor para baja tasa de conflictos. Pessimistic: usa SELECT FOR UPDATE, bloquea desde el inicio. Mejor cuando los conflictos son frecuentes.", explain:"Correcto. JPA Optimistic: @Version Long version en la entidad. Si Tx1 y Tx2 leen version=5 y ambas intentan actualizar, la primera hace version=6, la segunda falla con StaleObjectStateException porque la version ya no es 5. En banca: Optimistic para actualizaciones de datos de cliente (conflictos raros). Pessimistic para operaciones de saldo donde los conflictos son frecuentes y el costo del retry es alto."},
+  {label:"Optimistic Locking en JPA requiere configuración externa; no hay soporte nativo en Hibernate", explain:"Incorrecto. Hibernate tiene soporte nativo para Optimistic Locking con @Version. Simplemente agregar el campo anotado y Hibernate gestiona automáticamente la validación y el incremento de versión."},
+  {label:"Pessimistic Locking nunca genera deadlocks; es más seguro que Optimistic Locking por eso", explain:"Incorrecto. Pessimistic Locking es precisamente la causa más común de deadlocks cuando dos transacciones adquieren locks en orden diferente. Optimistic Locking no genera deadlocks porque no bloquea nada durante la lectura."},
+], correct:1},
+
+// ══════════ BD CON KAFKA & SPRING BOOT ══════════
+{cat:"BD con Kafka & CDC",
+q:"¿Qué es Change Data Capture (CDC) y cómo sincronizas dos bases de datos sin Kafka en un sistema bancario?",
+options:[
+  {label:"CDC es una técnica de backup incremental; no tiene relación con sincronización entre sistemas", explain:"Incorrecto. CDC captura y transmite los cambios (INSERT/UPDATE/DELETE) en una BD para ser procesados por otros sistemas. Es fundamentalmente diferente al backup."},
+  {label:"CDC lee el transaction log de la BD y captura cada cambio como un evento. Sin Kafka, alternativas: CDC nativo de SQL Server (Change Tracking/CDC feature) + jobs ETL que leen la tabla de cambios, replicación de BD (mirroring/Always On), o jobs programados con MERGE para sincronización periódica.", explain:"Correcto. SQL Server CDC feature: habilitar a nivel de tabla → SQL Server mantiene una tabla shadow con todos los cambios (cdc.schema_tablename). Un job de sincronización lee esta tabla periódicamente y aplica los cambios en la BD destino. Debezium es el conector CDC más popular para Kafka: lee el transaction log de SQL Server/PostgreSQL y emite eventos a topics Kafka. Para near-real-time sin Kafka: CDC + Azure Service Bus o un job que corre cada 30 segundos."},
+  {label:"CDC en SQL Server requiere deshabilitar las transacciones ACID; por eso no es recomendable en BD bancarias", explain:"Incorrecto. CDC en SQL Server funciona leyendo el transaction log después de que las transacciones se completan. No interfiere con el procesamiento ACID de las transacciones activas."},
+  {label:"La única forma de sincronizar dos BDs en tiempo real es que ambas compartan la misma conexión de Spring Boot", explain:"Incorrecto. Compartir una sola conexión entre dos BDs no es ni posible ni deseable. Las técnicas de sincronización (replicación, CDC, ETL) operan a nivel de datos, no de conexiones de aplicación."},
+], correct:1},
+
+{cat:"BD con Kafka & CDC",
+q:"¿Cómo garantizas consistencia entre una transacción de BD y la publicación de un evento a Kafka?",
+options:[
+  {label:"Publicar el evento a Kafka antes de hacer el commit de BD; así Kafka siempre tiene el evento", explain:"Incorrecto. Si el commit de BD falla después de publicar a Kafka, el evento quedó publicado pero la transacción no se guardó. Inconsistencia en dirección contraria."},
+  {label:"Patrón Transactional Outbox: en la misma transacción ACID, escribir el registro de negocio Y el evento en una tabla 'outbox'. Un proceso separado (o Debezium CDC) lee la outbox y publica a Kafka. Si Kafka falla, el evento queda en la outbox y se reintenta.", explain:"Correcto. El problema: Tx de BD y publicación a Kafka son dos sistemas distintos, no hay 2PC entre ellos. Publicar a Kafka después del commit: si Kafka falla en ese instante, el evento se pierde. Outbox soluciona esto: INSERT INTO pagos + INSERT INTO outbox_events en una transacción → ambos se commitean o ninguno. El relay process lee outbox y publica a Kafka con at-least-once. El consumidor usa Idempotent Consumer para manejar duplicados. Debezium puede leer el transaction log directamente (CDC) para publicar automáticamente."},
+  {label:"@Transactional de Spring sincroniza automáticamente BD y Kafka si usas KafkaTemplate dentro de la transacción", explain:"Incorrecto. @Transactional de Spring no incluye Kafka por defecto. Para transaccionalidad con Kafka se necesita KafkaTransactionManager configurado explícitamente, pero aún así no es un 2PC real con la BD. El Outbox Pattern es la solución más robusta."},
+  {label:"La solución es usar two-phase commit (XA) entre SQL Server y Kafka", explain:"Incorrecto. Kafka no soporta XA (2PC) como participante transaccional estándar. Además, 2PC tiene problemas de disponibilidad y rendimiento. El Outbox Pattern es la alternativa práctica y ampliamente adoptada."},
+], correct:1},
+
+{cat:"BD con Kafka & CDC",
+q:"¿Cómo usas Kafka Connect para sincronizar datos entre una BD SQL Server y un sistema downstream?",
+options:[
+  {label:"Kafka Connect es una herramienta de monitoreo de Kafka; no tiene relación con bases de datos", explain:"Incorrecto. Kafka Connect es un framework para conectar Kafka con sistemas externos (BDs, sistemas de archivos, APIs) mediante conectores Source (ingesta hacia Kafka) y Sink (exportación desde Kafka)."},
+  {label:"Kafka Connect con JDBC Source Connector: lee nuevos/modificados registros de SQL Server y los publica como eventos en topics Kafka. CDC Source Connector (Debezium): captura cambios del transaction log. Sink Connectors: consumen topics y escriben en destino (otra BD, Elasticsearch, S3).", explain:"Correcto. Arquitectura típica: SQL Server → Debezium Source Connector → Topic Kafka 'pagos.cambios' → JDBC Sink Connector → BD de reportería. El JDBC Source puede usar polling (consulta por timestamp/id) o Debezium usa CDC (transaction log), que es más eficiente y captura DELETEs que el polling no puede ver. Configuración en JSON: connector.class, connection.url, table.whitelist, topic.prefix. No requiere código Java; es configuración declarativa."},
+  {label:"Kafka Connect requiere modificar el código fuente de SQL Server para activar los hooks de cambio", explain:"Incorrecto. Kafka Connect opera externamente a SQL Server. El conector JDBC usa queries estándar; Debezium accede al transaction log mediante permisos de SQL Server Agent sin modificar el motor."},
+  {label:"Kafka Connect solo soporta bases de datos open source; para SQL Server se necesita código personalizado", explain:"Incorrecto. Debezium tiene soporte oficial para SQL Server, Oracle, MySQL, PostgreSQL y otros. El conector JDBC de Confluent también soporta SQL Server a través del driver JDBC estándar."},
+], correct:1},
+
+{cat:"BD con Kafka & CDC",
+q:"¿Cómo diseñas el particionamiento de un topic Kafka para que los eventos de una misma cuenta siempre lleguen en orden?",
+options:[
+  {label:"El orden en Kafka está garantizado globalmente a nivel de topic; no se necesita particionamiento especial", explain:"Incorrecto. Kafka garantiza orden dentro de una partición, no a nivel de topic completo. Con múltiples particiones, eventos de la misma cuenta pueden llegar a particiones distintas y procesarse en diferente orden."},
+  {label:"Usar el número de cuenta (o cliente_id) como partition key: producer.send(new ProducerRecord('transacciones', numeroCuenta, evento)). Kafka hace hash del key para asignar partición. Todas las transacciones de la misma cuenta van a la misma partición → orden garantizado.", explain:"Correcto. Con partition key por cuenta: todas las transacciones de la cuenta '001-12345' siempre van a la partición 3 (por ejemplo). El consumer que procesa la partición 3 las recibe en orden cronológico. Sin partition key: round-robin, transacciones de la misma cuenta pueden procesarse en cualquier orden. Importante: número de particiones define el máximo de consumers en paralelo. Más particiones = más paralelismo pero más overhead."},
+  {label:"El orden dentro de una cuenta se garantiza configurando acks=all en el producer; la clave de partición no afecta el orden", explain:"Incorrecto. acks=all garantiza durabilidad (el mensaje no se pierde), no orden. El orden depende exclusivamente de que los mensajes relacionados vayan a la misma partición."},
+  {label:"Para garantizar orden se debe usar un solo consumer por topic, independientemente del número de particiones", explain:"Incorrecto. Un solo consumer por topic elimina el paralelismo. La solución correcta es asegurar que eventos que necesitan estar ordenados entre sí compartan partición (mismo key), mientras que eventos independientes pueden ir a distintas particiones y ser procesados en paralelo."},
+], correct:1},
+
+// ══════════ ARQUITECTURA DE BD ══════════
+{cat:"Arquitectura de BD",
+q:"¿Cuándo usarías una base de datos NoSQL en lugar de SQL relacional en un sistema bancario?",
+options:[
+  {label:"NoSQL es siempre mejor que SQL para sistemas bancarios modernos porque escala horizontalmente", explain:"Incorrecto. NoSQL y SQL tienen trade-offs distintos. Los sistemas bancarios requieren ACID para operaciones transaccionales; NoSQL renuncia a parte de esa garantía. La elección depende del caso de uso específico."},
+  {label:"SQL para transacciones financieras (requieren ACID, relaciones complejas, integridad referencial). NoSQL para: datos de sesión y caché (Redis), perfiles de usuario con esquema variable (MongoDB), logs y eventos de auditoría masivos (Elasticsearch/Cassandra), datos de alta escritura y lectura eventual.", explain:"Correcto. Híbrido bancario típico: SQL Server para cuentas, transacciones, transferencias (ACID). Redis para caché de saldo, sesiones, rate limiting. MongoDB para documentos de onboarding (KYC con campos variables por tipo de cliente). Elasticsearch para búsqueda full-text de transacciones y auditoría. Cassandra para métricas de fraude en tiempo real (alta escritura). No hay un único tipo de BD para todo."},
+  {label:"La diferencia principal entre SQL y NoSQL es el lenguaje de consulta; SQL usa SQL y NoSQL usa JSON", explain:"Incorrecto. La diferencia fundamental es el modelo de datos (relacional vs documentos/columnas/grafo), el modelo de consistencia (ACID vs BASE), y el modelo de escalabilidad (vertical vs horizontal). El lenguaje de consulta es una consecuencia, no la causa."},
+  {label:"NoSQL no soporta transacciones; por eso SQL es obligatorio para cualquier operación que involucre dinero", explain:"Incorrecto. MongoDB 4.0+ soporta transacciones ACID multi-documento. CosmosDB soporta transacciones. Redis con Lua scripts ofrece atomicidad. Sin embargo, el soporte transaccional en NoSQL es más limitado y tiene más overhead que en SQL relacional."},
+], correct:1},
+
+{cat:"Arquitectura de BD",
+q:"¿Qué es el sharding de base de datos y qué problemas introduce que debes resolver?",
+options:[
+  {label:"Sharding es lo mismo que replicación; ambos distribuyen datos entre múltiples servidores para alta disponibilidad", explain:"Incorrecto. Replicación copia los mismos datos en múltiples nodos (para disponibilidad/lecturas). Sharding distribuye particiones disjuntas de los datos (para escala de escritura). Son técnicas complementarias con propósitos distintos."},
+  {label:"Sharding distribuye datos horizontalmente entre múltiples instancias de BD según una shard key (ej: cliente_id % N_shards). Escala escrituras y almacenamiento. Problemas: queries cross-shard (JOIN entre shards es costoso), transacciones distribuidas (no hay 2PC cross-shard), rebalanceo al agregar shards.", explain:"Correcto. Ejemplo: 10 shards con shard_key=cliente_id % 10. El cliente 1234 siempre va al shard 4. Queries del cliente 1234 van solo al shard 4 (eficiente). Reportes de todos los clientes requieren query a los 10 shards y agregar resultados (fan-out query, costoso). Solución para reportes: BD de reportería separada que agrega todos los shards via CDC/ETL. Sharding solo se justifica cuando un único nodo no puede manejar la carga."},
+  {label:"Sharding es automático en SQL Server; simplemente se activa con una opción de configuración sin cambios en la aplicación", explain:"Incorrecto. SQL Server no tiene sharding automático nativo como Cassandra o MongoDB. En SQL Server se implementa con Elastic Database (Azure SQL) o manualmente en la capa de aplicación. Siempre requiere cambios en la lógica de routing de queries."},
+  {label:"Con sharding, las transacciones ACID se mantienen igual que en una BD no-sharded", explain:"Incorrecto. Las transacciones ACID cross-shard son el mayor desafío del sharding. Requieren 2PC distribuido (costoso e inestable) o SAGA. Por eso el diseño del shard key debe garantizar que transacciones atómicas operen dentro de un solo shard (ej: todos los movimientos de una cuenta en el mismo shard)."},
+], correct:1},
+
+{cat:"Arquitectura de BD",
+q:"¿Cómo diseñas una arquitectura de réplicas de lectura para separar carga OLTP de reportería?",
+options:[
+  {label:"La réplica de lectura es idéntica a la BD principal en todos los aspectos; se usa indistintamente para cualquier operación", explain:"Incorrecto. La réplica tiene latencia de replicación (puede ser segundos). Usar réplica para operaciones que requieren datos fresquísimos (verificar saldo antes de una transferencia) puede ser riesgoso."},
+  {label:"BD principal (Primary): escrituras y lecturas críticas que requieren consistencia inmediata. Réplica de lectura (Read Replica/Always On Secondary): queries de reportería, dashboards, consultas históricas. Spring Boot: DataSource routing para enviar writes a primary y reads a réplica con @Transactional(readOnly=true).", explain:"Correcto. AbstractRoutingDataSource en Spring: determina dinámicamente qué datasource usar según el contexto transaccional. @Transactional(readOnly=true) en métodos de consulta → réplica. @Transactional → primary. Monitorear: replication lag (cuánto se tarda la réplica en recibir los cambios del primary). Si el lag es alto, reportes pueden mostrar datos desactualizados. En SQL Server: Always On Availability Groups con readable secondaries. En Azure: Azure SQL Database con read scale-out."},
+  {label:"La separación primary/réplica solo es necesaria con más de 10,000 usuarios concurrentes; para menos es innecesaria", explain:"Incorrecto. La separación es necesaria cuando las queries de reportería degradan el rendimiento de las transacciones, independientemente del número de usuarios. Una sola query de reporte que hace full scan de 100M registros puede impactar seriamente las transacciones en producción."},
+  {label:"Con CQRS no se necesitan réplicas de lectura; el modelo de lectura de CQRS reemplaza completamente la necesidad de réplicas", explain:"Incorrecto. CQRS y réplicas de lectura son complementarios. CQRS separa los modelos de datos de lectura y escritura (potencialmente en BDs distintas). Una réplica de lectura puede ser la BD del modelo de consulta en CQRS. Son patrones que pueden coexistir."},
+], correct:1},
+
+{cat:"Arquitectura de BD",
+q:"¿Qué es el particionamiento de tablas y cuándo lo aplicarías en una tabla de transacciones bancarias?",
+options:[
+  {label:"El particionamiento de tablas es lo mismo que el sharding; ambos dividen datos entre múltiples servidores", explain:"Incorrecto. El particionamiento divide una tabla en segmentos dentro del mismo servidor de BD (particionamiento horizontal interno). El sharding distribuye datos entre múltiples servidores independientes."},
+  {label:"Particionamiento divide lógicamente una tabla grande en segmentos según un criterio (fecha, rango de ID) mantenida en el mismo servidor. Beneficios: partition elimination (queries solo acceden a particiones relevantes), mantenimiento por partición (rebuild index solo en la partición del mes anterior), archivado eficiente.", explain:"Correcto. Ejemplo: tabla transacciones particionada por año-mes. Query por el mes actual solo accede a 1 de 60 particiones. REBUILD INDEX de la partición del mes anterior no bloquea transacciones del mes actual. Para archivar datos de 2020: mover la partición a una tabla histórica (switch partition) es casi instantáneo vs DELETE de millones de registros. En SQL Server: PARTITION FUNCTION + PARTITION SCHEME. Aplicar en tablas >50M registros con patrones de acceso por rango de tiempo."},
+  {label:"El particionamiento siempre mejora el rendimiento de cualquier query independientemente de si usa la clave de partición", explain:"Incorrecto. El particionamiento solo beneficia queries que filtran por la clave de partición (partition elimination). Queries sin filtro por fecha en el ejemplo anterior seguirán accediendo a todas las particiones (partition scan), sin beneficio y con overhead adicional."},
+  {label:"SQL Server no soporta particionamiento nativo; se necesita una herramienta de terceros para implementarlo", explain:"Incorrecto. SQL Server tiene soporte nativo de particionamiento de tablas desde la versión 2005. Se implementa con PARTITION FUNCTION (define los rangos) y PARTITION SCHEME (mapea rangos a filegroups). Enterprise Edition tiene más opciones, pero Standard también lo soporta."},
+], correct:1},
+
+// ══════════ SEGURIDAD & OPERACIONES ══════════
+{cat:"Seguridad & Operaciones BD",
+q:"¿Qué es TDE (Transparent Data Encryption) en SQL Server y qué protege realmente?",
+options:[
+  {label:"TDE encripta todas las comunicaciones entre la aplicación y SQL Server; es equivalente a SSL/TLS", explain:"Incorrecto. Eso es la encriptación en tránsito (SSL/TLS para conexiones). TDE encripta los datos en reposo: los archivos físicos en disco."},
+  {label:"TDE encripta los archivos de datos (.mdf), logs (.ldf) y backups en disco. Protege contra robo físico del disco o acceso no autorizado a los archivos. No protege queries desde conexiones autorizadas (los datos se desencriptan transparentemente en memoria para usuarios legítimos).", explain:"Correcto. TDE es transparente para las aplicaciones: la query funciona exactamente igual, SQL Server desencripta automáticamente al leer y encripta al escribir. Protege el escenario: 'un atacante robó el disco duro del servidor' → los archivos .mdf son ilegibles sin la Database Encryption Key. No protege: usuario con permisos de BD puede hacer SELECT * FROM cuentas normalmente. Para eso existe Row-Level Security, Dynamic Data Masking, y Always Encrypted."},
+  {label:"TDE protege contra SQL Injection encriptando todas las queries antes de ejecutarlas", explain:"Incorrecto. SQL Injection es una vulnerabilidad en cómo se construyen las queries. TDE no tiene ninguna relación con la prevención de SQL Injection. PreparedStatement y validación de inputs son las defensas contra SQL Injection."},
+  {label:"TDE degrada el rendimiento de SQL Server en un 30-40%; por eso solo se usa en datos no críticos", explain:"Incorrecto. El impacto de TDE en rendimiento es aproximadamente 3-5% en la mayoría de los casos. La encriptación/desencriptación se realiza a nivel de página en memoria y está optimizada. Para datos bancarios sensibles, es una medida de seguridad estándar con overhead justificado."},
+], correct:1},
+
+{cat:"Seguridad & Operaciones BD",
+q:"¿Qué es Always Encrypted en SQL Server y cuándo lo usarías sobre TDE?",
+options:[
+  {label:"Always Encrypted es simplemente el nombre de TDE en versiones nuevas de SQL Server; son la misma función", explain:"Incorrecto. Son características distintas. TDE: encriptación en reposo (archivos en disco). Always Encrypted: encriptación end-to-end donde los datos están encriptados incluso dentro de SQL Server en memoria."},
+  {label:"Always Encrypted: los datos se encriptan en el cliente (aplicación) antes de enviarse a SQL Server. SQL Server almacena y opera sobre datos encriptados sin poder verlos. Solo el cliente con la clave puede desencriptar. Ideal para datos ultra-sensibles (números de tarjeta, DNI, datos biométricos) que ni el DBA debe ver.", explain:"Correcto. Diferencia clave vs TDE: con TDE el DBA puede hacer SELECT y ver los datos en claro. Con Always Encrypted, el DBA solo ve bytes encriptados. La clave de desencriptación nunca sale del cliente. Limitación: SQL Server no puede hacer operaciones sobre columnas encriptadas (no puede filtrar, ordenar, agregar) sin cliente siempre encriptado. Para números de tarjeta de crédito (PCI-DSS) y datos biométricos, Always Encrypted es el estándar."},
+  {label:"Always Encrypted es más lento que TDE porque encripta cada registro individualmente en lugar de a nivel de página", explain:"Incorrecto. Aunque Always Encrypted sí tiene más overhead que TDE (encriptación a nivel de columna en el cliente vs a nivel de página en el motor), la comparación no es sobre velocidad sino sobre el modelo de seguridad. Se elige Always Encrypted cuando la garantía de que ni el DBA puede ver los datos es un requerimiento de negocio o regulatorio."},
+  {label:"Always Encrypted reemplaza completamente la necesidad de roles y permisos de BD; con encriptación no se necesita control de acceso", explain:"Incorrecto. Always Encrypted y los controles de acceso son capas de seguridad complementarias (defensa en profundidad). Roles y permisos controlan qué operaciones puede ejecutar cada usuario. Always Encrypted garantiza que ciertos datos sean ilegibles incluso para usuarios con permisos de SELECT."},
+], correct:1},
+
+{cat:"Seguridad & Operaciones BD",
+q:"¿Cómo implementas Row-Level Security (RLS) en SQL Server para un sistema multi-tenant bancario?",
+options:[
+  {label:"Row-Level Security en SQL Server se implementa con una cláusula WHERE en cada query de la aplicación; no hay soporte nativo", explain:"Incorrecto. SQL Server tiene Row-Level Security nativo desde 2016. Se implementa con Security Policies que se aplican automáticamente a nivel de motor, sin necesidad de modificar cada query."},
+  {label:"RLS filtra filas automáticamente según el contexto del usuario. Se crea: (1) Función de predicado que determina qué filas puede ver el usuario, (2) Security Policy que vincula la función a la tabla. Todas las queries a esa tabla tienen el filtro aplicado transparentemente.", explain:"Correcto. Ejemplo multi-tenant: CREATE FUNCTION dbo.fn_filtro_tenant(@tenant_id INT) RETURNS TABLE AS RETURN SELECT 1 WHERE @tenant_id = CAST(SESSION_CONTEXT(N'tenant_id') AS INT); CREATE SECURITY POLICY pol_cuentas ADD FILTER PREDICATE dbo.fn_filtro_tenant(tenant_id) ON dbo.cuentas. La aplicación establece: EXEC sp_set_session_context N'tenant_id', @tenant_id al conectarse. Todas las queries a cuentas automáticamente filtran por tenant_id, incluso si el desarrollador olvida el WHERE."},
+  {label:"RLS degrada el rendimiento al 50% porque agrega un JOIN extra a cada query; solo debe usarse cuando es obligatorio por regulación", explain:"Incorrecto. RLS bien implementado tiene impacto de rendimiento de ~5-10%. El predicado de filtro se integra en el plan de ejecución y puede aprovechar índices en la columna del filtro. Es una capa de seguridad eficiente para multi-tenant."},
+  {label:"RLS en SQL Server solo funciona con Azure SQL Database; en SQL Server on-premise no está disponible", explain:"Incorrecto. RLS está disponible en SQL Server 2016+ on-premise y en Azure SQL Database. Es una característica del motor, no de la plataforma de hosting."},
+], correct:1},
+
+{cat:"Seguridad & Operaciones BD",
+q:"¿Cómo previene SQL Injection en Spring Boot y qué va más allá de PreparedStatement?",
+options:[
+  {label:"SQL Injection es imposible en Spring Boot porque el framework sanitiza automáticamente todos los inputs", explain:"Incorrecto. Spring Boot no sanitiza automáticamente todos los inputs. Si el desarrollador usa concatenación de strings para construir queries, Spring Boot no lo previene."},
+  {label:"PreparedStatement (y Spring Data JPA que lo usa internamente) es la defensa principal. Adicional: validación de inputs (@Valid, @NotNull, @Size en DTOs), nunca confiar en datos del cliente, usar @Query con parámetros nombrados (:param), auditar queries con logs estructurados, y limitar permisos del usuario de BD (solo SELECT/INSERT/UPDATE en tablas necesarias).", explain:"Correcto. Spring Data @Query: @Query('SELECT c FROM Cuenta c WHERE c.numeroCuenta = :numero') — Spring usa PreparedStatement automáticamente con el parámetro :numero. Si alguien pasa '001 OR 1=1', se trata como el literal de cadena, no como SQL. Defensa en profundidad: incluso si hay un vector de SQL Injection no detectado, un usuario de BD con solo SELECT en cuentas no puede hacer DROP TABLE o acceder a otras tablas. Principio de mínimo privilegio a nivel de BD."},
+  {label:"La única defensa efectiva contra SQL Injection es encriptar la BD completa con TDE", explain:"Incorrecto. TDE protege archivos en disco. SQL Injection explota la conexión legítima de la aplicación para ejecutar SQL arbitrario. Una BD encriptada con TDE sigue siendo vulnerable a SQL Injection si las queries se construyen con concatenación."},
+  {label:"SQL Injection solo afecta a queries escritas en SQL nativo; JPA/Hibernate es inmune por definición", explain:"Incorrecto. Si usas @Query con concatenación de strings en lugar de parámetros nombrados en JPA, sigues siendo vulnerable. entityManager.createQuery('SELECT c FROM Cuenta WHERE numero = ' + input) en JPA es igual de vulnerable que en JDBC puro."},
+], correct:1},
+
+{cat:"Seguridad & Operaciones BD",
+q:"¿Cómo manejas las migraciones de esquema de BD en un microservicio bancario en producción?",
+options:[
+  {label:"Modificar el esquema directamente en producción con scripts SQL manuales durante ventanas de mantenimiento es la práctica estándar", explain:"Incorrecto. Scripts manuales son propensos a errores humanos, inconsistencias entre entornos y no tienen trazabilidad automática. Flyway o Liquibase son el estándar para gestión automatizada."},
+  {label:"Flyway o Liquibase: migraciones versionadas (V1__initial.sql, V2__add_index.sql) que se aplican automáticamente al iniciar la aplicación. Integradas en el CI/CD pipeline. Compatibilidad con zero-downtime: additive changes (ADD COLUMN nullable), evitar DROP y RENAME sin migración de datos previa.", explain:"Correcto. Flyway en Spring Boot: spring.flyway.enabled=true. Al iniciar, Flyway compara los scripts en classpath:db/migration con la tabla flyway_schema_history y aplica los pendientes. Estrategia zero-downtime: V1=ADD COLUMN nuevo_campo NULL (compatible con versión anterior), desplegar nueva versión, V2=fill datos, V3=NOT NULL constraint. Nunca hacer un ALTER TABLE que requiera lock en tabla de millones de registros en horario pico. SQL Server: usar ONLINE=ON para operaciones de índice sin bloqueo."},
+  {label:"Spring Boot con JPA genera automáticamente el esquema desde las entidades con spring.jpa.hibernate.ddl-auto=update; no se necesitan herramientas adicionales", explain:"Incorrecto. ddl-auto=update es peligroso en producción: Hibernate puede tomar decisiones incorrectas sobre el esquema, no puede ejecutar migraciones complejas con transformaciones de datos, y no hay trazabilidad de cambios. Solo usar en desarrollo. En producción: validate (solo valida que el esquema coincide con las entidades) o none."},
+  {label:"Las migraciones de BD deben aplicarse manualmente antes de cada deploy; automatizarlas es riesgoso en producción", explain:"Incorrecto. La automatización (Flyway/Liquibase en el pipeline CI/CD) es más segura que las migraciones manuales porque son reproducibles, versionadas, testeadas en ambientes anteriores y no dependen de la memoria de un DBA."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Qué diferencia hay entre FetchType.LAZY y FetchType.EAGER en JPA y cuál es la recomendación en sistemas de alta carga?",
+options:[
+  {label:"EAGER es siempre mejor porque garantiza que los datos estén disponibles cuando se necesiten", explain:"Incorrecto. EAGER puede cargar datos innecesarios en la mayoría de los casos, desperdiciando queries y memoria. Por eso Hibernate recomienda LAZY como default."},
+  {label:"LAZY: carga la relación solo cuando se accede explícitamente (proxy, se dispara una query adicional). EAGER: carga siempre con la entidad padre. Recomendación en alta carga: LAZY por defecto + JOIN FETCH explícito cuando se necesitan los datos relacionados.", explain:"Correcto. El problema con EAGER en alta carga: cargar 1000 transacciones con EAGER en sus cuentas asociadas → 1000 queries adicionales a la tabla cuentas, aunque el código nunca use esa información. LAZY + JOIN FETCH selectivo: solo carga relaciones cuando se necesitan explícitamente. Spring Data @EntityGraph permite definir qué relaciones cargar por método de repositorio sin modificar la entidad."},
+  {label:"FetchType solo aplica a relaciones @OneToMany; en @ManyToOne siempre es EAGER y no se puede cambiar", explain:"Incorrecto. FetchType aplica a todas las anotaciones de relación: @OneToMany, @ManyToOne, @OneToOne, @ManyToMany. Todas pueden configurarse como LAZY o EAGER. De hecho, @ManyToOne es EAGER por defecto en JPA, pero la recomendación es cambiarlo a LAZY."},
+  {label:"En sistemas de alta carga, la solución es siempre usar EAGER para todas las relaciones y cachear todo en Redis", explain:"Incorrecto. EAGER aumenta el volumen de datos cargados en cada query. Redis caché es útil para datos consultados frecuentemente, pero no reemplaza la necesidad de una estrategia de fetching adecuada a nivel de JPA."},
+], correct:1},
+
+{cat:"JDBC, JPA & Spring Boot",
+q:"¿Cómo funciona el caché de segundo nivel de Hibernate y cuándo lo habilitarías?",
+options:[
+  {label:"El caché de segundo nivel de Hibernate es automático y siempre está activo; no requiere configuración", explain:"Incorrecto. El caché de segundo nivel está deshabilitado por defecto. Requiere configuración explícita: proveedor de caché (EhCache, Hazelcast, Redis), habilitar en persistence.xml o application.properties, y anotar entidades con @Cache."},
+  {label:"Caché de segundo nivel: comparte entidades entre sesiones (SessionFactory scope). Útil para entidades que se leen frecuentemente y cambian poco (catálogos de tipos de transacción, monedas, configuraciones). Evitar para entidades que cambian frecuentemente (saldos, transacciones activas).", explain:"Correcto. @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) en la entidad. Configuración: spring.jpa.properties.hibernate.cache.use_second_level_cache=true. Proveedor: EhCache o Hazelcast. Ejemplo en banca: TipoTransaccion (débito, crédito, transferencia) tiene solo 10 registros y se lee en cada operación → perfecto para caché de segundo nivel. Cuenta con saldo en movimiento constante → nunca cachear, se leerían datos desactualizados."},
+  {label:"El caché de segundo nivel es mejor que Redis porque está integrado con Hibernate y no requiere infraestructura adicional", explain:"Incorrecto. El caché de segundo nivel de Hibernate y Redis tienen diferentes scopes. Hibernate L2 cache está acoplado a las entidades JPA. Redis es más flexible: puede cachear DTOs, resultados de queries complejas, y datos de cualquier tipo. No son mutuamente excluyentes."},
+  {label:"El caché de segundo nivel funciona automáticamente para todas las queries JPQL; no se necesita configuración por entidad", explain:"Incorrecto. El caché de segundo nivel funciona para entidades anotadas con @Cache cuando se accede por ID. Para queries JPQL, existe el Query Cache separado (hibernate.cache.use_query_cache=true) que cachea resultados de queries específicas marcadas con setCacheable(true)."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Qué son las Materialized Views y cuándo las usarías en un sistema bancario?",
+options:[
+  {label:"Las Materialized Views son exactamente iguales a las Views normales; la diferencia es solo el nombre", explain:"Incorrecto. Una View normal ejecuta la query subyacente cada vez que se consulta (virtual). Una Materialized View almacena el resultado físicamente en disco (precalculado), como una tabla, con capacidad de tener índices propios."},
+  {label:"Materialized View almacena el resultado de una query compleja físicamente en disco. Útil para: reportes de saldos consolidados por producto, resúmenes diarios de transacciones, dashboards de métricas de negocio. La query pesada se ejecuta una vez (refresh); las consultas sobre la vista son rápidas.", explain:"Correcto. Escenario bancario: reporte de saldo total por tipo de cuenta requiere SUM sobre 100M transacciones. Sin Materialized View: cada consulta tarda 30 segundos. Con Materialized View refrescada cada hora: la consulta al reporte tarda milisegundos. SQL Server: Indexed Views (similar a Materialized View). PostgreSQL: MATERIALIZED VIEW con REFRESH MATERIALIZED VIEW CONCURRENTLY. Trade-off: los datos pueden tener latencia (tiempo desde el último refresh)."},
+  {label:"Las Materialized Views son automáticamente consistentes con la tabla base en tiempo real; siempre tienen datos actualizados", explain:"Incorrecto. Las Materialized Views necesitan refresh explícito (manual o programado). Hasta el próximo refresh, los datos pueden estar desactualizados. Algunas BDs ofrecen refresh incremental pero con limitaciones. El diseño debe aceptar datos con cierta latencia."},
+  {label:"SQL Server no soporta Materialized Views; solo están disponibles en PostgreSQL y Oracle", explain:"Incorrecto. SQL Server tiene Indexed Views que son funcionalmente equivalentes a Materialized Views: almacenan el resultado de la view con un índice clustered, y SQL Server las mantiene actualizadas automáticamente (con restricciones en la query de la view). Sin embargo, el mantenimiento automático tiene costo de escritura."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Cómo manejas el problema de hot spots en una tabla de transacciones de alta concurrencia?",
+options:[
+  {label:"Hot spots no es un problema real en SQL Server moderno; el motor lo maneja automáticamente con page-level locking", explain:"Incorrecto. Hot spots son un problema real: cuando muchas transacciones concurrentes modifican la misma página de datos (ej: la última página en una tabla con IDENTITY PK), se genera contención severa."},
+  {label:"Hot spot en tabla IDENTITY: todas las inserciones van a la última página → contención. Soluciones: GUID secuencial (NEWSEQUENTIALID()) para distribuir inserciones, particionamiento por hash para distribuir en múltiples páginas, o usar SEQUENCE con cache (reduce round-trips al generador).", explain:"Correcto. Con INT IDENTITY puro, todas las inserciones van a la última página del Clustered Index. Con 1000 TPS concurrentes, hay contención de lock en esa última página. NEWSEQUENTIALID() genera GUIDs secuenciales que distribuyen mejor que GUID aleatorio y reducen fragmentación vs INSERT ordenado. Alternativa: particionar la tabla y distribuir inserciones entre particiones por hash del cliente_id."},
+  {label:"La solución a hot spots siempre es cambiar de SQL a NoSQL porque NoSQL distribuye naturalmente las escrituras", explain:"Incorrecto. NoSQL puede tener hot spots igualmente si el shard key no está bien diseñado (ej: Cassandra con timestamp como partition key concentra todas las escrituras recientes en la misma partición). El problema es de diseño de clave, no del tipo de BD."},
+  {label:"Hot spots se resuelven aumentando el número de índices en la tabla para distribuir las escrituras", explain:"Incorrecto. Más índices no distribuyen las escrituras; al contrario, cada índice adicional debe actualizarse en cada INSERT/UPDATE/DELETE, aumentando la contención. Los índices adicionales agravan el problema de hot spots."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Qué es un connection leak y cómo lo detectas y prevenes con HikariCP?",
+options:[
+  {label:"Connection leak ocurre cuando hay demasiadas conexiones abiertas simultáneamente; se previene limitando el pool size", explain:"Incorrecto. Connection leak es cuando una conexión se obtiene del pool pero no se devuelve (por excepción no manejada o bug en el código). Pool size limita el número de conexiones, no evita que se pierdan."},
+  {label:"Connection leak: una conexión se toma del pool pero nunca se devuelve (falta de close() en el finally, o excepción que bypasea el return). El pool se agota gradualmente. Detección: HikariCP leakDetectionThreshold (loguea stack trace si una conexión se retiene más de N ms). Prevención: try-with-resources.", explain:"Correcto. HikariCP config: spring.datasource.hikari.leak-detection-threshold=2000 (2 segundos). Si una conexión no se devuelve en 2 segundos, HikariCP loguea el stack trace del código que la tomó. En Spring con @Transactional, las conexiones se gestionan automáticamente. El riesgo es en código JDBC manual sin try-with-resources: Connection conn = ds.getConnection(); // si aquí hay una excepción y no hay finally { conn.close(); }, la conexión se pierde."},
+  {label:"Connection leaks son imposibles con Spring Boot porque el framework cierra automáticamente todas las conexiones al terminar cada request HTTP", explain:"Incorrecto. Spring cierra transacciones y conexiones al finalizar métodos @Transactional. Pero conexiones obtenidas directamente con DataSource.getConnection() sin Spring managing el ciclo de vida pueden tener leaks si el developer no las cierra correctamente."},
+  {label:"La solución a connection leaks es aumentar el maximumPoolSize para compensar las conexiones perdidas", explain:"Incorrecto. Aumentar el pool size enmascara temporalmente el leak pero no lo resuelve. Eventualmente el pool más grande también se agota. La solución es encontrar y corregir el código que no devuelve las conexiones."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Cómo afectan los índices al rendimiento de escrituras (INSERT/UPDATE/DELETE) en una tabla transaccional?",
+options:[
+  {label:"Los índices no afectan el rendimiento de escrituras; solo impactan las lecturas", explain:"Incorrecto. Cada índice debe actualizarse en cada operación de escritura. Una tabla con 10 índices hace 10 actualizaciones de índice por cada INSERT/UPDATE/DELETE."},
+  {label:"Cada índice en la tabla debe actualizarse en cada escritura: INSERT agrega entradas, UPDATE puede mover entradas, DELETE elimina entradas. En tablas de alta concurrencia: demasiados índices = alta latencia en escrituras. Balance: solo índices que se usan realmente en queries de producción.", explain:"Correcto. Estrategia: identificar índices no usados con sys.dm_db_index_usage_stats (SQL Server), eliminar los que tienen 0 seeks/scans en los últimos 30 días. En tablas de ingesta masiva (logs, transacciones): considerar desactivar índices, cargar datos, y reconstruir índices (para batch processing). Para OLTP: mantener índices necesarios, aceptar el overhead como costo de las lecturas eficientes."},
+  {label:"La solución es usar índices filtrados (WHERE activo=1) para reducir el tamaño y por ende el overhead de escritura", explain:"Incorrecto. Los índices filtrados sí reducen el tamaño del índice (solo indexan un subconjunto), lo que puede reducir levemente el overhead de mantenimiento. Sin embargo, solo son útiles si la mayoría de queries filtran exactamente por esa condición. No es la estrategia general para reducir overhead de escritura."},
+  {label:"En SQL Server Enterprise, los índices se actualizan de forma asíncrona y no bloquean las escrituras", explain:"Incorrecto. Los índices se actualizan sincrónicamente dentro de la misma transacción que modifica los datos. Si el UPDATE de la tabla falla, las actualizaciones de índice también se revierten. No hay actualización asíncrona de índices en SQL Server (a diferencia de algunos NoSQL)."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Qué es el patrón de acceso por lotes (batch processing) y cómo lo configuras en JPA para alto volumen?",
+options:[
+  {label:"Batch processing en JPA se logra automáticamente con cualquier operación save() en un bucle; no requiere configuración especial", explain:"Incorrecto. Por defecto, JPA hace un INSERT por registro en el bucle. Para batch real se necesita configuración específica y flush/clear periódico."},
+  {label:"Configurar hibernate.jdbc.batch_size=50 para que Hibernate agrupe 50 INSERTs en una sola llamada JDBC. Hacer entityManager.flush() + entityManager.clear() cada N registros para liberar memoria. Evitar @GeneratedValue(IDENTITY) que desactiva el batching.", explain:"Correcto. Sin batching: 10,000 INSERTs = 10,000 round-trips a BD. Con batch_size=50: 200 round-trips. Ahorro significativo en latencia de red y procesamiento del motor. Problema con IDENTITY: SQL Server necesita el ID generado para retornar al ORM, lo que fuerza ejecución de cada INSERT inmediatamente, rompiendo el batch. Solución: usar SEQUENCE en lugar de IDENTITY para generar IDs en bloque. Spring Batch para procesos ETL masivos maneja esto automáticamente."},
+  {label:"Batch processing con JPA siempre requiere deshabilitar las transacciones para mejor rendimiento", explain:"Incorrecto. Las transacciones son esenciales incluso en batch: garantizan que en caso de error, el lote se revierte completamente. Deshabilitar transacciones en batch puede dejar datos parcialmente procesados."},
+  {label:"La única forma de hacer batch eficiente en Spring Boot es con JDBC puro; JPA/Hibernate no soporta batching real", explain:"Incorrecto. Hibernate soporta JDBC batching nativo con hibernate.jdbc.batch_size. Spring Data JPA saveAll() con configuración de batch hace batch automáticamente. Spring Batch es el framework dedicado para procesos masivos con JPA o JDBC."},
+], correct:1},
+
+{cat:"Arquitectura de BD",
+q:"¿Cuál es la diferencia entre consistencia eventual y consistencia fuerte en el contexto de réplicas de BD bancarias?",
+options:[
+  {label:"Consistencia fuerte es imposible en sistemas distribuidos; siempre hay que aceptar consistencia eventual", explain:"Incorrecto. El teorema CAP describe trade-offs, no imposibilidades absolutas. Es posible tener consistencia fuerte en sistemas distribuidos (ej: Google Spanner, sistemas con sincronous replication), aunque con mayor latencia."},
+  {label:"Consistencia fuerte: todas las réplicas tienen los mismos datos inmediatamente después de una escritura (replicación síncrona). Mayor latencia. Consistencia eventual: la réplica puede estar temporalmente desactualizada (replicación asíncrona). Menor latencia. En banca: saldo → fuerte. Historial de transacciones → eventual es aceptable.", explain:"Correcto. Replicación síncrona (fuerte): el commit no completa hasta que todas las réplicas confirmaron la escritura. Garantiza que leer de cualquier réplica da el dato más reciente. Costo: la latencia del commit incluye el round-trip a todas las réplicas. Replicación asíncrona (eventual): el commit completa en el primary; las réplicas se actualizan después. Riesgo: si el primary falla antes de replicar, puede haber pérdida de datos. En SQL Server Always On: puede configurarse en síncrono (fuerte) o asíncrono (eventual) por grupo de disponibilidad."},
+  {label:"Consistencia eventual es siempre preferible en banca porque es más rápida y el negocio puede tolerar datos desactualizados", explain:"Incorrecto. Para datos críticos de negocio (saldo disponible, límites de crédito, estado de cuenta), consistencia eventual puede causar problemas graves: aprobación de una transacción basada en saldo desactualizado, sobregirar una cuenta. La elección debe ser cuidadosa por tipo de dato."},
+  {label:"En Spring Boot con @Transactional, todas las réplicas siempre tienen consistencia fuerte automáticamente", explain:"Incorrecto. @Transactional gestiona la transacción en la BD primaria. La consistencia de las réplicas depende de la configuración de replicación del motor de BD, no de Spring. Spring no puede cambiar si la replicación es síncrona o asíncrona."},
+], correct:1},
+
+{cat:"BD con Kafka & CDC",
+q:"¿Cómo implementarías un sistema de auditoría de cambios de BD sin impactar el rendimiento de las transacciones?",
+options:[
+  {label:"Agregar triggers de BD en cada tabla que inserten en una tabla de auditoría dentro de la misma transacción", explain:"Incorrecto. Los triggers de auditoría ejecutan dentro de la misma transacción: si la auditoría es lenta o falla, impacta o revierte la transacción principal. También son difíciles de mantener y pueden crecer en complejidad."},
+  {label:"CDC (Debezium + Kafka): captura cambios del transaction log de SQL Server sin intervenir en las transacciones. Los eventos de cambio se publican a un topic Kafka, un consumer los procesa y escribe en la tabla de auditoría de forma asíncrona. La transacción principal no espera la auditoría.", explain:"Correcto. Debezium lee el transaction log de SQL Server (SQL Server CDC habilitado) y emite eventos change data. Estos eventos incluyen: antes y después del cambio, timestamp, usuario, tipo de operación. Consumer escribe en tabla de auditoría o Elasticsearch para búsqueda. Ventaja: la transacción original no se ve afectada por la velocidad o disponibilidad del sistema de auditoría. Otra opción: Spring Data JPA @EntityListeners con auditoría asíncrona via @Async + @TransactionalEventListener(phase=AFTER_COMMIT)."},
+  {label:"La única forma confiable de auditoría es @Transactional con REQUIRES_NEW en el método de auditoría para que tenga su propia transacción", explain:"Incorrecto. REQUIRES_NEW crea una transacción separada, pero sigue siendo síncrona: la transacción principal espera que la auditoría complete. Si hay muchas escrituras concurrentes, el sistema de auditoría puede convertirse en un cuello de botella."},
+  {label:"Para auditoría sin impacto en rendimiento, deshabilitar todas las auditorías en horas pico y habilitarlas en horarios de baja carga", explain:"Incorrecto. La auditoría en sistemas financieros regulados (SBS, SUNAT) debe ser continua y completa. Deshabilitar la auditoría viola regulaciones y puede resultar en sanciones. La solución correcta es implementarla de forma asíncrona para que no impacte el rendimiento transaccional."},
+], correct:1},
+
+{cat:"Seguridad & Operaciones BD",
+q:"¿Cómo manejas datos sensibles (números de tarjeta, DNI) en logs y queries de BD en un sistema bancario?",
+options:[
+  {label:"Loguear toda la información posible incluyendo datos sensibles facilita el debugging en producción", explain:"Incorrecto. Loguear datos sensibles viola PCI-DSS (números de tarjeta), GDPR/LPDP peruana (datos personales), y crea vectores de ataque si los logs son comprometidos. Muchos incidentes de seguridad han expuesto datos sensibles vía logs."},
+  {label:"Data Masking en logs: loguear solo los últimos 4 dígitos de tarjeta (**** **** **** 1234). Tokenización: almacenar un token irreversible en lugar del número real. Dynamic Data Masking en SQL Server: usuarios con menos privilegios ven datos enmascarados. Nunca loguear PINs, CVV, o contraseñas.", explain:"Correcto. Estrategias: Tokenización (Vault, AWS KMS): el número de tarjeta real se almacena en un sistema seguro; la BD guarda solo el token. Dynamic Data Masking SQL Server: @Column MASKED WITH FUNCTION=partial(0,'****',4) — DBA ve el número completo, aplicación ve ****. SLF4J MDC: no incluir datos sensibles en el contexto de logging. Logs estructurados JSON: configurar un sanitizador que remueve campos sensibles antes de escribir al log. Regulación SBS Perú: requiere auditoría de acceso a datos sensibles."},
+  {label:"La solución es encriptar todos los logs con TDE; así aunque alguien acceda a los logs, los datos están protegidos", explain:"Incorrecto. TDE encripta archivos en disco, no los valores individuales dentro de los archivos de log. Si el log contiene '4532 1234 5678 9012' en texto plano y TDE encripta el archivo, alguien con acceso legítimo al sistema (un DBA) puede aún leer el número de tarjeta en el log."},
+  {label:"Usar SHA-256 para hashear datos sensibles antes de guardarlos en BD; el hash es reversible si se necesita el dato original", explain:"Incorrecto. SHA-256 es una función hash unidireccional (no reversible). No es adecuado para datos que necesitan recuperarse (número de cuenta, DNI). Para datos que necesitan ser buscados sin revelarlos: tokenización. Para datos que solo se necesitan verificar (contraseñas): bcrypt/argon2."},
+], correct:1},
+
+{cat:"Performance & Query Plans",
+q:"¿Cómo configuras y monitorizas el connection pool en producción para detectar problemas tempranamente?",
+options:[
+  {label:"El connection pool no necesita monitorización; HikariCP maneja automáticamente todos los problemas", explain:"Incorrecto. Sin monitorización no sabrás cuándo el pool está cerca de la saturación, cuándo hay connection leaks, o cuándo la BD está respondiendo lentamente. Los problemas del pool a menudo aparecen antes de que el sistema colapse."},
+  {label:"Métricas clave: pool size activo vs total (saturación), tiempo de espera por conexión (connectionTimeout), connection creation time (BD lenta), idle connections, pending threads. Exponer via Spring Boot Actuator + Prometheus + Grafana. Alertar cuando active connections > 80% del pool.", explain:"Correcto. Spring Boot Actuator con HikariCP: management.endpoints.web.exposure.include=health,metrics. Métricas en /actuator/metrics/hikaricp.connections.active, hikaricp.connections.pending, hikaricp.connections.timeout. En Grafana: alerta cuando hikaricp.connections.active/hikaricp.connections.max > 0.8 durante más de 30 segundos. También monitorear hikaricp.connections.creation (tiempo para crear conexión nueva) — si sube, la BD puede estar bajo presión."},
+  {label:"Aumentar el connection pool size al máximo posible (1000+) para evitar que se sature", explain:"Incorrecto. Pools extremadamente grandes saturan la BD con demasiadas conexiones concurrentes, degradando el rendimiento del motor. Cada conexión en SQL Server consume memoria (~10MB de RAM). La clave es el tamaño correcto basado en la carga real, no el máximo posible."},
+  {label:"La mejor forma de monitorizar el pool es revisar los logs de HikariCP manualmente cada hora", explain:"Incorrecto. La revisión manual de logs no escala y no detecta problemas en tiempo real. El monitoreo automatizado con alertas es esencial en sistemas bancarios donde los problemas deben detectarse en segundos, no horas."},
+], correct:1},
+
+{cat:"Arquitectura de BD",
+q:"¿Qué consideraciones tienes al diseñar el esquema de una BD para un sistema de pagos de alta transaccionalidad?",
+options:[
+  {label:"Normalizar al máximo (5FN) para eliminar toda redundancia; la normalización siempre mejora el rendimiento", explain:"Incorrecto. Ultra-normalización puede empeorar el rendimiento en sistemas OLTP al requerir muchos JOINs para obtener datos relacionados. El balance entre normalización y desnormalización estratégica es clave."},
+  {label:"Normalización adecuada para integridad (3FN para tablas de referencia). Desnormalización estratégica para tablas de alta lectura (ej: incluir monto_formateado en la tabla de transacciones para evitar cálculos repetidos). PKs numéricas secuenciales. Índices en columnas de búsqueda frecuente. Tipos de datos precisos (DECIMAL(18,2) para montos, nunca FLOAT).", explain:"Correcto. Para montos monetarios: DECIMAL(18,2) o NUMERIC(18,2) es obligatorio. FLOAT tiene errores de representación binaria (0.1 + 0.2 ≠ 0.3 en floating point). Fechas: DATETIME2 en SQL Server (más precisión, rango más amplio que DATETIME). PKs: INT IDENTITY o BIGINT IDENTITY para tablas de alta escritura (evitar GUID como clustered PK → fragmentación). Considerar: tablas de estados separadas (transacciones_estado) para evitar actualizaciones masivas en la tabla principal."},
+  {label:"Para alta transaccionalidad, usar solo un índice por tabla (la PK) y hacer full scans; los índices adicionales degradan las escrituras en más de un 50%", explain:"Incorrecto. El overhead de índices adicionales en escrituras es real pero generalmente mucho menor que el costo de full scans para operaciones de lectura. Un sistema de pagos hace muchas más lecturas (consulta de saldo, historial) que escrituras."},
+  {label:"Almacenar todos los montos como VARCHAR para flexibilidad; se convierten a número en la capa de aplicación", explain:"Incorrecto. Almacenar montos como VARCHAR es una práctica peligrosa: no garantiza que los valores sean numéricos, no permite cálculos directos en SQL (SUM, agregaciones), no tiene precisión garantizada, y ocupa más espacio. DECIMAL/NUMERIC es el tipo correcto para montos monetarios."},
+], correct:1},
+
+{cat:"BD con Kafka & CDC",
+q:"¿Cómo manejas la consistencia eventual entre la BD transaccional y el índice de búsqueda (Elasticsearch) en un sistema bancario?",
+options:[
+  {label:"Escribir simultáneamente a SQL Server y Elasticsearch en la misma transacción para garantizar consistencia", explain:"Incorrecto. No existe transacción distribuida entre SQL Server y Elasticsearch. Si una escritura falla y la otra no, hay inconsistencia. Además, la latencia de Elasticsearch afectaría a todas las transacciones."},
+  {label:"Outbox Pattern + Kafka: la transacción escribe en SQL Server + tabla outbox. Un relay publica a Kafka. Un consumer indexa en Elasticsearch. La consistencia es eventual: Elasticsearch puede estar levemente desactualizado, pero la BD SQL Server es siempre la fuente de verdad.", explain:"Correcto. Flujo: 1) Transacción → SQL Server (fuente de verdad) + outbox event. 2) Debezium/relay → topic Kafka. 3) Consumer → Elasticsearch index actualización. Latencia típica: 100ms-2s. Para búsquedas donde datos levemente desactualizados son aceptables (historial de transacciones de hace minutos), es perfecto. Para verificación de saldo antes de una transferencia: siempre leer de SQL Server. El sistema debe tener claridad sobre qué datos pueden ser eventuales y cuáles requieren consistencia fuerte."},
+  {label:"Elasticsearch reemplaza completamente a SQL Server en sistemas bancarios modernos porque es más rápido para búsquedas", explain:"Incorrecto. Elasticsearch es excelente para búsqueda full-text y análisis. No tiene las garantías ACID de SQL Server y no está diseñado para operaciones transaccionales. Son sistemas complementarios con roles distintos."},
+  {label:"La consistencia eventual es inaceptable en sistemas bancarios; siempre debe usarse consistencia fuerte en todos los sistemas", explain:"Incorrecto. La consistencia eventual es perfectamente aceptable para sistemas auxiliares (índices de búsqueda, cachés, reportes) donde los datos base (SQL Server transaccional) son la fuente de verdad. Exigir consistencia fuerte en todos los sistemas limitaría severamente la escalabilidad y disponibilidad."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Qué estrategia usarías para procesar 1 millón de registros diarios en un proceso batch sin afectar la BD transaccional?",
+options:[
+  {label:"Procesar el millón de registros en un único thread durante la noche; la BD puede manejarlo sin configuración especial", explain:"Incorrecto. Un único thread puede tardar horas para 1M registros. Sin límites de recursos, puede saturar la BD incluso en horario nocturno si hay operaciones de madrugada."},
+  {label:"Procesamiento en chunks (Spring Batch): leer en lotes de 1000, procesar en paralelo con múltiples threads, escribir en batch. Usar réplica de lectura para el source data. Limitar el pool de conexiones del batch para no competir con transacciones online. Programar en horario de baja carga.", explain:"Correcto. Spring Batch: ItemReader (chunk=1000, réplica), ItemProcessor (lógica de transformación), ItemWriter (JDBC batch insert, primary). Paralelismo: TaskExecutor con 4-8 threads para el step. Controlar: spring.batch.job.enabled=false para no ejecutar al iniciar, usar @Scheduled o un disparador externo. Monitorear: tiempo total, registros procesados/fallidos, impacto en CPU/IO de la BD. Partition Step: dividir los 1M registros entre múltiples workers (por rango de ID) para paralelismo máximo."},
+  {label:"La solución es usar Kafka para el batch: publicar 1M mensajes y que los consumers los procesen; Kafka elimina la presión en la BD", explain:"Incorrecto. Kafka puede ser parte de la solución pero no elimina la presión en la BD de destino. Si 1M consumers escriben a la BD simultáneamente desde Kafka, la presión en la BD es igual o mayor. Spring Batch con control de concurrencia es más apropiado para ETL/batch a BD."},
+  {label:"Spring Batch está desactualizado; en sistemas modernos todo debe ser reactivo con WebFlux y R2DBC para batch", explain:"Incorrecto. Spring Batch sigue siendo el estándar para procesamiento batch en el ecosistema Spring. WebFlux/R2DBC son para APIs reactivas de alta concurrencia, no para orquestación de procesos batch con retry, skip, y gestión de jobs."},
+], correct:1},
+
+{cat:"Índices & Cardinality",
+q:"¿Qué es un índice parcial/filtrado y cuándo es más eficiente que un índice completo?",
+options:[
+  {label:"Un índice filtrado cubre solo una condición específica del WHERE. Más pequeño y eficiente para queries que siempre filtran por ese criterio. Ejemplo: índice en transacciones WHERE estado='PENDIENTE' — solo indexa el 2% de la tabla en vez del 100%.", explain:"Correcto. CREATE INDEX IX_trans_pendientes ON transacciones(fecha) WHERE estado='PENDIENTE'. Si el 98% de las transacciones están completadas, este índice tiene solo el 2% de las filas. Queries que siempre filtran por estado='PENDIENTE' lo usan eficientemente. El índice es mucho más pequeño: menos espacio, menos mantenimiento en escrituras, mejor cache hit rate. Muy útil en sistemas bancarios donde la mayoría de las operaciones son sobre registros activos/pendientes."},
+  {label:"Los índices filtrados son inútiles porque SQL Server nunca los usa si hay un índice completo disponible", explain:"Incorrecto. El optimizador de SQL Server elige el índice más eficiente. Un índice filtrado que cubre exactamente la query (mismo filtro en el WHERE) será preferido sobre un índice completo porque es más pequeño y tiene mejor selectividad."},
+  {label:"Un índice filtrado cubre solo las primeras N filas de la tabla ordenadas por la clave del índice", explain:"Incorrecto. Un índice filtrado incluye filas que cumplen una condición del WHERE (ej: WHERE activo=1), no las primeras N filas. No está relacionado con el orden o posición de las filas."},
+  {label:"Los índices filtrados solo están disponibles en SQL Server Enterprise; en Standard Edition no se pueden crear", explain:"Incorrecto. Los índices filtrados están disponibles en todas las ediciones de SQL Server 2008 o posterior (Express, Standard, Enterprise). No es una característica exclusiva de Enterprise."},
+], correct:0},
+
+{cat:"Performance & Query Plans",
+q:"¿Qué es la fragmentación de páginas de datos (heap fragmentation) vs la fragmentación de índices?",
+options:[
+  {label:"Heap fragmentation y fragmentación de índices son exactamente lo mismo; se tratan con las mismas operaciones", explain:"Incorrecto. Son problemas distintos en estructuras distintas. Heap es la tabla sin Clustered Index (datos desordenados en páginas). La fragmentación del índice es sobre la estructura del árbol B+ del índice."},
+  {label:"Heap fragmentation: páginas de datos desordenadas en tablas sin Clustered Index (heap tables). Causa lecturas físicas no contiguas. Solución: ALTER TABLE REBUILD o crear un Clustered Index. Index fragmentation: desalineamiento lógico/físico del índice B+. Solución: REORGANIZE o REBUILD del índice.", explain:"Correcto. Las tablas heap (sin Clustered Index) acumulan páginas en cualquier orden físico. Con el tiempo, los datos se dispersan en el disco causando muchas lecturas físicas no contiguas. La solución más efectiva es agregar un Clustered Index (convierte la heap en una tabla organizada). Si la heap es intencional (por patrón de escritura), ALTER TABLE nombre REBUILD reorganiza las páginas físicamente."},
+  {label:"Las tablas en SQL Server nunca son heaps; siempre tienen un Clustered Index creado automáticamente", explain:"Incorrecto. En SQL Server, una tabla sin Clustered Index explícito es una heap. La PK crea un índice pero no necesariamente Clustered (depende de si se especifica CLUSTERED). Solo con CREATE CLUSTERED INDEX o PRIMARY KEY con CLUSTERED se define el orden físico."},
+  {label:"La fragmentación de datos solo importa en discos HDD; en discos SSD es irrelevante porque el acceso es aleatorio a igual velocidad", explain:"Incorrecto. Aunque los SSDs tienen menor penalización por acceso aleatorio que los HDDs, la fragmentación sigue importando en SSDs: más páginas leídas = más I/O, más datos en caché, más tiempo de procesamiento. La fragmentación impacta el rendimiento en cualquier tipo de almacenamiento, aunque menos en SSD."},
+], correct:1},
+
+{cat:"Alta Concurrencia & Transacciones",
+q:"¿Cómo implementas rate limiting a nivel de BD para proteger el sistema de consultas abusivas?",
+options:[
+  {label:"Rate limiting a nivel de BD se implementa con DENY en los permisos de usuario cuando hay abuso detectado", explain:"Incorrecto. DENY es una medida drástica y estática que bloquea el acceso completamente. Rate limiting es dinámico y throttlea gradualmente según el volumen de peticiones."},
+  {label:"Resource Governor en SQL Server: clasifica conexiones en grupos de recursos con límites de CPU/memoria/IOPS. Para aplicaciones externas: implementar rate limiting en el API Gateway o en la capa de aplicación con Redis (contador por ventana de tiempo) antes de llegar a la BD.", explain:"Correcto. Resource Governor (SQL Server Enterprise): CREATE RESOURCE POOL pool_reportes WITH (MAX_CPU_PERCENT=20); — las queries de reportes nunca consumen más del 20% de CPU aunque la BD esté libre. Para APIs: Redis con INCR + EXPIRE implementa rate limiting: si usuario X supera 100 queries/minuto, retornar 429 sin llegar a la BD. Spring Cloud Gateway tiene rate limiting nativo con Redis. La capa correcta para rate limiting es generalmente antes de la BD, no dentro de ella."},
+  {label:"La única forma de limitar el uso de BD es reducir el connection pool size; con menos conexiones hay menos queries concurrentes", explain:"Incorrecto. Reducir el pool size limita la concurrencia pero no el rate. Un solo usuario con una conexión puede ejecutar miles de queries en un minuto. Rate limiting requiere contar operaciones por unidad de tiempo, no solo limitar conexiones activas."},
+  {label:"Rate limiting a nivel de BD no es necesario si se usa caché correctamente; todos los requests serán servidos por caché y la BD no recibirá carga", explain:"Incorrecto. El caché tiene tasa de aciertos (cache hit rate) típicamente del 70-90% en sistemas bien diseñados. El 10-30% restante llega a la BD. Además, las escrituras siempre llegan a la BD. El rate limiting protege contra el 100% de carga, no solo el cache miss."},
+], correct:1},
+
+];
+
+const ALL_QUESTIONS = [...JAVA_QUESTIONS,...SPRING_QUESTIONS,...BACKEND_QUESTIONS,...BALOTARIO_EXTRA,...DP_QUESTIONS,...DB_QUESTIONS];
 
 // ── Quiz definitions ──
 const QUIZZES = [
@@ -2948,6 +3900,24 @@ const QUIZZES = [
     ctaColor:"#f59e0b",
     tagStyle:"color:#f59e0b;border-color:#5a3a0d;background:#2a1a05",
     filter: q => BACKEND_QUESTIONS.includes(q)
+  },
+  {
+    id:"db", icon:"🗄️", title:"Base de Datos – Alta Transaccionalidad",
+    desc:"Índices, cardinality, performance, connection pools, CDC, Kafka + BD, transacciones distribuidas, seguridad y operaciones.",
+    gradient:"linear-gradient(90deg,#0ea5e9,#10b981)",
+    tags:[{l:"preguntas",c:"green"},{l:"Índices",c:""},{l:"Kafka CDC",c:""},{l:"JPA & JDBC",c:""}],
+    ctaColor:"#0ea5e9",
+    tagStyle:"color:#0ea5e9;border-color:#0a2a3a;background:#051520",
+    filter: q => DB_QUESTIONS.includes(q)
+  },
+  {
+    id:"patterns", icon:"🧩", title:"Design Patterns + SOLID Top 50",
+    desc:"GoF patterns (Creacional, Estructural, Comportamiento), SOLID y patrones Enterprise: CQRS, Saga, Outbox, Event Sourcing y más.",
+    gradient:"linear-gradient(90deg,#ec4899,#f97316)",
+    tags:[{l:"preguntas",c:"green"},{l:"SOLID",c:""},{l:"GoF",c:""},{l:"Enterprise",c:""}],
+    ctaColor:"#ec4899",
+    tagStyle:"color:#ec4899;border-color:#4a0d2e;background:#2a0818",
+    filter: q => DP_QUESTIONS.includes(q)
   },
   {
     id:"balotario", icon:"📋", title:"Balotario NEW CORE – Completo",
@@ -3040,6 +4010,14 @@ function renderQuestion(){
   currentShuffled=idx.map(i=>q.options[i]);
   currentShuffledCorrect=idx.indexOf(q.correct);
   area.innerHTML=`
+    <div class="nav top-nav">
+      <button class="btn btn-outline" onclick="goBack()" ${current===0?'disabled':''}>← Anterior</button>
+      <span class="nav-progress">
+        <span class="prog-nums">${current+1} / ${questions.length}</span>
+        <span class="prog-label">Pregunta</span>
+      </span>
+      <button class="btn btn-primary" id="next-btn" onclick="goNext()" disabled>Siguiente →</button>
+    </div>
     <div class="category">${q.cat}</div>
     <div class="q-card">
       <div class="q-num">Pregunta ${current+1} de ${questions.length}</div>
@@ -3056,10 +4034,6 @@ function renderQuestion(){
           </button>`).join("")}
       </div>
       <div id="result-banner"></div>
-    </div>
-    <div class="nav">
-      <button class="btn btn-outline" onclick="goBack()" ${current===0?'disabled':''}>← Anterior</button>
-      <button class="btn btn-primary" id="next-btn" onclick="goNext()" disabled>Siguiente →</button>
     </div>`;
 }
 
@@ -3080,8 +4054,8 @@ function selectOption(chosen){
   document.getElementById("next-btn").disabled=false;
   updateHeader();
 }
-function goNext(){current++;updateHeader();renderQuestion();}
-function goBack(){if(current>0){current--;answered=false;updateHeader();renderQuestion();}}
+function goNext(){current++;updateHeader();renderQuestion();document.getElementById('quiz-screen').scrollTo({top:0,behavior:'instant'});window.scrollTo({top:0,behavior:'instant'});}
+function goBack(){if(current>0){current--;answered=false;updateHeader();renderQuestion();document.getElementById('quiz-screen').scrollTo({top:0,behavior:'instant'});window.scrollTo({top:0,behavior:'instant'});}}
 function renderFinal(area){
   const total=questions.length,pct=Math.round((correctCount/total)*100);
   const emoji=pct>=80?"🏆":pct>=60?"👍":"📚";
